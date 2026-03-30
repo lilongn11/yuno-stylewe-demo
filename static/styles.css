@@ -510,12 +510,27 @@ body {
   border: .5px solid var(--Separators-S1);
   border-top: none;
   border-radius: 0 0 10px 10px;
-  padding: 14px;
+  padding: 0 14px 14px;
   margin-top: -3px;
+}
+
+#sdk-form-wrapper.loading {
+  display: block;
 }
 
 #sdk-form-wrapper.loaded {
   display: block;
+}
+
+#sdk-loading {
+  font-size: 13px;
+  color: var(--Labels-Tertiary);
+  text-align: center;
+  padding: 12px 0;
+}
+
+#sdk-form-wrapper.loaded #sdk-loading {
+  display: none;
 }
 
 .payment-method-card.selected + #sdk-form-wrapper.loaded {
@@ -524,11 +539,11 @@ body {
 }
 
 #root {
-  min-height: 40px;
+  min-height: 0;
 }
 
 #form-element {
-  min-height: 10px;
+  min-height: 0;
 }
 
 /* External payment button wrappers */

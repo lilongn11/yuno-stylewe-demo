@@ -1,5 +1,8 @@
 import { getCheckoutSession, createPayment, getPublicApiKey } from './api.js'
 
+const t0 = performance.now()
+const log = (msg) => console.log(`[${((performance.now() - t0) / 1000).toFixed(2)}s] ${msg}`)
+
 const params = new URLSearchParams(window.location.search)
 const planName = params.get('plan') || 'moderato'
 const monthlyPrice = parseFloat(params.get('price') || '15')
@@ -33,19 +36,31 @@ let yuno = null
 let checkoutSession = null
 let currentMethod = null
 
-async function initCheckoutLite() {
-  try {
-    const { checkout_session, country: countryCode } = await getCheckoutSession(totalAmount)
-    checkoutSession = checkout_session
+// Start API calls immediately — don't wait for SDK script
+log('Starting API calls (parallel with SDK load)')
+const apiDataPromise = Promise.all([
+  getCheckoutSession(totalAmount),
+  getPublicApiKey(),
+])
 
-    const publicApiKey = await getPublicApiKey()
+async function initCheckoutLite() {
+  log('SDK ready')
+  try {
+    const [sessionData, publicApiKey] = await apiDataPromise
+    checkoutSession = sessionData.checkout_session
+    const countryCode = sessionData.country
+    log('API data ready (session + key)')
+
     yuno = await Yuno.initialize(publicApiKey)
+    log('Yuno.initialize done')
 
     await yuno.startCheckout({
       checkoutSession,
       elementSelector: '#root',
       countryCode,
       language: 'en',
+      showLoading: false,
+      keepLoader: false,
       renderMode: {
         type: 'element',
         elementSelector: {
@@ -67,14 +82,19 @@ async function initCheckoutLite() {
         console.log('Yuno error:', error)
       },
       onLoading: (args) => {
+        log(`onLoading: isLoading=${args.isLoading} type=${args.type}`)
         if (!args.isLoading) {
-          document.getElementById('sdk-form-wrapper').classList.add('loaded')
+          const wrapper = document.getElementById('sdk-form-wrapper')
+          wrapper.classList.remove('loading')
+          wrapper.classList.add('loaded')
+          log('Card form visible')
         }
       },
     })
+    log('startCheckout done')
 
-    // Mount CARD by default
     selectMethod('CARD')
+    log('mountCheckoutLite called')
 
     // Mount external buttons (non-blocking)
     yuno.mountExternalButtons([
@@ -105,7 +125,7 @@ function selectMethod(method) {
   googlePayWrapper.style.display = 'none'
 
   if (method === 'CARD') {
-    // SDK will add .loaded class via onLoading callback once form is ready
+    sdkForm.classList.add('loading')
     yuno.mountCheckoutLite({
       paymentMethodType: 'CARD',
       vaultedToken: null,

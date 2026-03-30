@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Checkout - Kimi AI</title>
   <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://sdk-web.y.uno" crossorigin>
+  <link rel="preconnect" href="https://api-sandbox.y.uno" crossorigin>
+  <link rel="preconnect" href="https://sdk-web-card.prod.y.uno" crossorigin>
+  <link rel="dns-prefetch" href="https://sdk-web.y.uno">
 </head>
 <body>
   <div class="checkout">
@@ -52,6 +56,7 @@
 
             <!-- SDK card form — hidden until loaded -->
             <div id="sdk-form-wrapper">
+              <div id="sdk-loading">Loading payment form...</div>
               <div id="root"></div>
               <div id="form-element"></div>
               <div id="action-form-element"></div>
