@@ -13,7 +13,7 @@ const ACCOUNT_CODE = process.env.ACCOUNT_CODE
 const PUBLIC_API_KEY = process.env.PUBLIC_API_KEY
 const PRIVATE_SECRET_KEY = process.env.PRIVATE_SECRET_KEY
 
-const SERVER_PORT = 8080
+const SERVER_PORT = process.env.PORT || 8080
 
 let CUSTOMER_ID
 
@@ -144,7 +144,9 @@ app.listen(SERVER_PORT, async () => {
   CUSTOMER_ID = await createCustomer().then(({ id }) => id)
   console.log(`Customer created: ${CUSTOMER_ID}`)
 
-  await open(`http://localhost:${SERVER_PORT}`)
+  if (process.env.NODE_ENV !== 'production') {
+    await open(`http://localhost:${SERVER_PORT}`)
+  }
 })
 
 const ApiKeyPrefixToEnvironmentSuffix = {
