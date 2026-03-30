@@ -2,717 +2,181 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://assets-global.website-files.com/6277c350218d32e9e5dc0380/627e9998bb4b6124743a90fc_favicon-yuno32x32.png" rel="shortcut icon" type="image/x-icon"/>
-  <link href="https://assets-global.website-files.com/6277c350218d32e9e5dc0380/627e999c388c6cd2a87050e7_favicon-yuno256x256.png" rel="apple-touch-icon"/>
-  <title>Yuno Demo</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter">
+  <title>Kimi AI - Pricing</title>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <!-- Hidden SDK containers — no layout impact -->
-  <div id="root" style="position:fixed;top:-1px;left:-1px;width:1px;height:1px;overflow:hidden;"></div>
-  <div id="form-element" style="display:none;"></div>
-  <div id="action-form-element" style="display:none;"></div>
+  <div class="pricing">
+    <div class="pricing-container">
+      <div class="pricing-header">
+        <h1 class="pricing-logo">Your Plan</h1>
+      </div>
 
-  <!-- Checkout Full inline overlay -->
-  <div id="checkout-full-overlay" style="display:none;">
-    <div id="checkout-full-inner">
-      <div id="checkout-full-header">
-        <button id="checkout-full-close" aria-label="Close">&#10005;</button>
-      </div>
-      <div id="checkout-full-root"></div>
-      <div id="checkout-surcharge-notice" style="display:none;">
-        <span>&#9432;</span>
-        A processing fee applies to card payments: 1% for Singapore-issued cards, 2% for all other cards.
-      </div>
-      <button id="checkout-full-pay-btn" style="display:none;">Pay Now</button>
-    </div>
-  </div>
+      <div class="pricing-content">
+        <div class="pricing-cycles">
+          <button class="cycle-item" data-cycle="monthly">Monthly</button>
+          <button class="cycle-item active" data-cycle="annually">
+            Annually
+            <span class="cycle-badge">Save up to $480</span>
+          </button>
+        </div>
 
-  <!-- External-button overlay (used by Checkout Lite for PayPal / Google Pay / Apple Pay) -->
-  <div id="ext-btn-overlay" style="display:none;">
-    <div id="ext-btn-inner">
-      <div id="ext-btn-header">
-        <span id="ext-btn-title">Pay</span>
-        <button id="ext-btn-close" aria-label="Close">&#10005;</button>
-      </div>
-      <div id="ext-btn-container">
-        <span id="ext-btn-loading" class="methods-loading">Loading…</span>
-      </div>
-    </div>
-  </div>
+        <div class="pricing-plans">
+          <!-- Moderato -->
+          <div class="plan">
+            <div class="plan-card">
+              <div class="plan-info">
+                <h2 class="plan-title">Moderato</h2>
+                <p class="plan-price">
+                  <span class="price-current" data-annual="15" data-monthly="19">$15</span>
+                  <span class="price-strikethrough" data-annual="19" data-monthly="">$19</span>
+                  <span class="price-period">/ month</span>
+                </p>
+                <p class="plan-billing">Billed for 12 months</p>
+              </div>
+              <ul class="features">
+                <li><span class="check">&#10003;</span> Extended agent quota</li>
+                <li><span class="check">&#10003;</span> Agent multi-tasking</li>
+                <li><span class="check">&#10003;</span> Agents with 4x speed and priority access</li>
+                <li><span class="check">&#10003;</span> K2.5 with higher speed and extended quota</li>
+                <li><span class="check">&#10003;</span> Slides visual mode with Nano Banana</li>
+                <li><span class="check">&#10003;</span> Kimi Code available</li>
+              </ul>
+              <div class="plan-bottom">
+                <a href="/checkout?plan=moderato&price=15&original=19&cycle=annually" class="plan-button">Get Moderato</a>
+              </div>
+            </div>
+          </div>
 
-  <!-- Surcharge confirmation modal (used by Checkout Lite) -->
-  <div id="surcharge-confirm" style="display:none;">
-    <div id="surcharge-confirm__inner">
-      <h3>Confirm Payment</h3>
-      <div class="sc-row"><span>Card origin</span><span id="sc-country">—</span></div>
-      <div class="sc-row"><span>Surcharge rate</span><span id="sc-rate">—</span></div>
-      <div class="sc-row"><span>Base amount</span><span id="sc-base">—</span></div>
-      <div class="sc-row sc-row--fee"><span>Processing fee</span><span id="sc-fee">—</span></div>
-      <div class="sc-row sc-row--total"><span>Total</span><span id="sc-total">—</span></div>
-      <p id="sc-disclaimer" style="display:none;">
-        &#9888; Card origin could not be determined. Applying standard 2% rate.
-      </p>
-      <div class="sc-actions">
-        <button id="sc-back-card">Use different card</button>
-        <button id="sc-ok">Confirm &amp; Pay</button>
-      </div>
-      <div class="sc-actions-secondary">
-        <button id="sc-change-method">&#8592; Change payment method</button>
-      </div>
-    </div>
-  </div>
+          <!-- Allegretto -->
+          <div class="plan plan-featured">
+            <div class="plan-card">
+              <div class="plan-badge-top">Most Popular</div>
+              <div class="plan-info">
+                <h2 class="plan-title">Allegretto</h2>
+                <p class="plan-price">
+                  <span class="price-current" data-annual="31" data-monthly="39">$31</span>
+                  <span class="price-strikethrough" data-annual="39" data-monthly="">$39</span>
+                  <span class="price-period">/ month</span>
+                </p>
+                <p class="plan-billing">Billed for 12 months</p>
+              </div>
+              <ul class="features">
+                <li><span class="check">&#10003;</span> <strong>Based on Moderato</strong></li>
+                <li><span class="check">&#10003;</span> 2x agent quota</li>
+                <li><span class="check">&#10003;</span> 2x usage quota for K2.5 model</li>
+                <li><span class="check">&#10003;</span> UNLIMITED Slides visual mode</li>
+                <li><span class="check">&#10003;</span> Kimi Code 5x quota</li>
+                <li><span class="check">&#10003;</span> Agent Swarm preview</li>
+              </ul>
+              <div class="plan-bottom">
+                <a href="/checkout?plan=allegretto&price=31&original=39&cycle=annually" class="plan-button button-featured">Get Allegretto</a>
+              </div>
+            </div>
+          </div>
 
-  <div class="index-container">
-    <div class="index-card">
-      <h1 class="index-title">Yuno Demo</h1>
+          <!-- Allegro -->
+          <div class="plan">
+            <div class="plan-card">
+              <div class="plan-info">
+                <h2 class="plan-title">Allegro</h2>
+                <p class="plan-price">
+                  <span class="price-current" data-annual="79" data-monthly="99">$79</span>
+                  <span class="price-strikethrough" data-annual="99" data-monthly="">$99</span>
+                  <span class="price-period">/ month</span>
+                </p>
+                <p class="plan-billing">Billed for 12 months</p>
+              </div>
+              <ul class="features">
+                <li><span class="check">&#10003;</span> <strong>Based on Moderato</strong></li>
+                <li><span class="check">&#10003;</span> 5x agent quota</li>
+                <li><span class="check">&#10003;</span> 2x agent multi-tasking</li>
+                <li><span class="check">&#10003;</span> Priority access during peak hours</li>
+                <li><span class="check">&#10003;</span> 5x usage quota for K2.5 model</li>
+                <li><span class="check">&#10003;</span> Kimi Code 15x quota</li>
+              </ul>
+              <div class="plan-bottom">
+                <a href="/checkout?plan=allegro&price=79&original=99&cycle=annually" class="plan-button">Get Allegro</a>
+              </div>
+            </div>
+          </div>
 
-      <!-- Settings -->
-      <section class="index-section">
-        <h2 class="index-section-label">Settings</h2>
-        <div class="settings-form">
-          <label class="settings-row">
-            <span>Country</span>
-            <select id="country"><option value="">Loading…</option></select>
-          </label>
-          <label class="settings-row">
-            <span>Amount</span>
-            <input type="number" id="amount" min="1" placeholder="10">
-          </label>
-          <div class="settings-row">
-            <span>Currency</span>
-            <span id="currency" class="currency-display">—</span>
+          <!-- Vivace -->
+          <div class="plan">
+            <div class="plan-card">
+              <div class="plan-info">
+                <h2 class="plan-title">Vivace</h2>
+                <p class="plan-price">
+                  <span class="price-current" data-annual="159" data-monthly="199">$159</span>
+                  <span class="price-strikethrough" data-annual="199" data-monthly="">$199</span>
+                  <span class="price-period">/ month</span>
+                </p>
+                <p class="plan-billing">Billed for 12 months</p>
+              </div>
+              <ul class="features">
+                <li><span class="check">&#10003;</span> <strong>Based on Allegro</strong></li>
+                <li><span class="check">&#10003;</span> 15x agent quota</li>
+                <li><span class="check">&#10003;</span> 5x agent multi-tasking</li>
+                <li><span class="check">&#10003;</span> 15x usage quota for K2.5 model</li>
+                <li><span class="check">&#10003;</span> Kimi Code 50x quota</li>
+                <li><span class="check">&#10003;</span> Agent Swarm full access</li>
+              </ul>
+              <div class="plan-bottom">
+                <a href="/checkout?plan=vivace&price=159&original=199&cycle=annually" class="plan-button">Get Vivace</a>
+              </div>
+            </div>
           </div>
         </div>
-        <button id="apply-settings" class="btn-apply">Apply Settings</button>
-        <p id="settings-status" class="settings-status"></p>
-      </section>
-
-      <!-- Checkout Full -->
-      <details class="folder" open>
-        <summary class="folder-summary">Checkout Full</summary>
-        <div class="folder-content">
-          <div class="page-links">
-            <a href="#" id="checkout-full-link" class="page-link">Checkout Full</a>
-            <a href="/checkout?external=true" class="page-link">Checkout Full + External Buttons</a>
-            <a href="/checkout-seamless" class="page-link">Seamless Checkout</a>
-            <a href="/checkout-seamless?external=true" class="page-link">Seamless + External Buttons</a>
-          </div>
-        </div>
-      </details>
-
-      <!-- Checkout Lite -->
-      <details class="folder" id="checkout-lite-folder">
-        <summary class="folder-summary">Checkout Lite</summary>
-        <div class="folder-content">
-          <p class="methods-hint">Select a payment method:</p>
-          <div id="checkout-lite-methods" class="method-grid">
-            <span class="methods-loading">Loading available methods…</span>
-          </div>
-          <div class="page-links" style="margin-top:12px;">
-            <a href="#" id="checkout-lite-link" class="page-link page-link--disabled">Continue With Selected</a>
-          </div>
-        </div>
-      </details>
-
-      <!-- Enrollment -->
-      <details class="folder" id="enrollment-folder">
-        <summary class="folder-summary">Enrollment</summary>
-        <div class="folder-content">
-          <p class="methods-hint">Select a payment method to enroll:</p>
-          <div id="enrollment-methods" class="method-grid">
-            <span class="methods-loading">Loading available methods…</span>
-          </div>
-          <div class="page-links" style="margin-top:12px;">
-            <a href="#" id="enrollment-link" class="page-link page-link--disabled">Enrollment Lite</a>
-          </div>
-        </div>
-      </details>
+      </div>
     </div>
   </div>
 
   <script>
-    // Accordion: only one folder open at a time
-    document.querySelectorAll('.folder').forEach(detail => {
-      detail.addEventListener('toggle', () => {
-        if (detail.open) {
-          document.querySelectorAll('.folder').forEach(other => {
-            if (other !== detail) other.removeAttribute('open')
-          })
-        }
+    const cycleButtons = document.querySelectorAll('.cycle-item')
+    const prices = document.querySelectorAll('.price-current')
+    const strikethroughs = document.querySelectorAll('.price-strikethrough')
+    const billings = document.querySelectorAll('.plan-billing')
+    const planButtons = document.querySelectorAll('.plan-button')
+
+    cycleButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        cycleButtons.forEach(b => b.classList.remove('active'))
+        btn.classList.add('active')
+        const cycle = btn.dataset.cycle
+
+        prices.forEach(el => {
+          const val = cycle === 'annually' ? el.dataset.annual : el.dataset.monthly
+          el.textContent = '$' + val
+        })
+
+        strikethroughs.forEach(el => {
+          const val = cycle === 'annually' ? el.dataset.annual : el.dataset.monthly
+          if (val) {
+            el.textContent = '$' + val
+            el.style.display = ''
+          } else {
+            el.style.display = 'none'
+          }
+        })
+
+        billings.forEach(el => {
+          el.textContent = cycle === 'annually' ? 'Billed for 12 months' : 'Billed monthly'
+        })
+
+        planButtons.forEach(a => {
+          const url = new URL(a.href)
+          const card = a.closest('.plan-card')
+          const currentPrice = card.querySelector('.price-current')
+          const val = cycle === 'annually' ? currentPrice.dataset.annual : currentPrice.dataset.monthly
+          const originalVal = currentPrice.dataset.monthly
+          url.searchParams.set('price', val)
+          url.searchParams.set('original', originalVal)
+          url.searchParams.set('cycle', cycle)
+          a.href = url.toString()
+        })
       })
     })
   </script>
-
-  <script type="module">
-    import { getPublicApiKey, getCustomerSession, createEnrollment, getCheckoutSession, updateSessionFee, createPayment } from '/static/api.js'
-
-    const FALLBACK_COUNTRIES = [
-      { code: 'CO', name: 'Colombia', currency: 'COP' },
-      { code: 'BR', name: 'Brazil', currency: 'BRL' },
-      { code: 'CL', name: 'Chile', currency: 'CLP' },
-      { code: 'AR', name: 'Argentina', currency: 'ARS' },
-      { code: 'SG', name: 'Singapore', currency: 'SGD' },
-      { code: 'US', name: 'United States', currency: 'USD' },
-    ]
-    const CACHE_KEY = 'yuno_countries_v1'
-    const EXTERNAL_BUTTON_METHODS = new Set(['PAYPAL', 'PAYPAL_ENROLLMENT', 'GOOGLE_PAY', 'APPLE_PAY'])
-    let countryMap = {}
-    let checkoutLiteMethod = null
-
-    async function loadCountries() {
-      const cached = localStorage.getItem(CACHE_KEY)
-      if (cached) return JSON.parse(cached)
-
-      try {
-        const data = await fetch('https://restcountries.com/v3.1/all?fields=name,cca2,currencies')
-          .then(r => r.json())
-
-        const countries = data
-          .filter(c => c.cca2 && c.currencies && Object.keys(c.currencies).length > 0)
-          .map(c => ({
-            code: c.cca2,
-            name: c.name.common,
-            currency: Object.keys(c.currencies)[0],
-          }))
-          .sort((a, b) => a.name.localeCompare(b.name))
-
-        localStorage.setItem(CACHE_KEY, JSON.stringify(countries))
-        return countries
-      } catch {
-        return FALLBACK_COUNTRIES
-      }
-    }
-
-    function populateSelect(countries, currentCode) {
-      const select = document.getElementById('country')
-      select.innerHTML = ''
-      countryMap = {}
-      countries.forEach(c => {
-        countryMap[c.code] = c.currency
-        const opt = document.createElement('option')
-        opt.value = c.code
-        opt.textContent = `${c.name} (${c.currency})`
-        if (c.code === currentCode) opt.selected = true
-        select.appendChild(opt)
-      })
-      updateCurrency()
-    }
-
-    function updateCurrency() {
-      const code = document.getElementById('country').value
-      document.getElementById('currency').textContent = countryMap[code] ?? '—'
-    }
-
-    async function loadCheckoutLiteMethods() {
-      checkoutLiteMethod = null
-      document.getElementById('checkout-lite-link').classList.add('page-link--disabled')
-      const container = document.getElementById('checkout-lite-methods')
-      container.innerHTML = '<span class="methods-loading">Loading available methods…</span>'
-
-      try {
-        const methods = await fetch('/checkout/payment-methods').then(r => r.json())
-
-        if (!Array.isArray(methods) || methods.length === 0) {
-          container.innerHTML = '<span class="methods-empty">No methods available for current settings.</span>'
-          return
-        }
-
-        container.innerHTML = ''
-        methods.forEach(m => {
-          const btn = document.createElement('button')
-          btn.className = 'method-card'
-          btn.dataset.type = m.type
-          btn.innerHTML = `
-            <div class="method-icon-wrap">
-              ${m.icon ? `<img src="${m.icon}" alt="" class="method-icon">` : ''}
-            </div>
-            <span class="method-name">${m.name || m.type}</span>`
-
-          btn.addEventListener('click', () => {
-            container.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'))
-            btn.classList.add('selected')
-            checkoutLiteMethod = m.type
-            document.getElementById('checkout-lite-link').classList.remove('page-link--disabled')
-          })
-          container.appendChild(btn)
-        })
-      } catch {
-        container.innerHTML = '<span class="methods-empty">Could not load methods.</span>'
-      }
-    }
-
-    function formatMethodName(type) {
-      return type.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
-        .replace('Paypal', 'PayPal')
-        .replace('Google Pay', 'Google Pay')
-        .replace('Apple Pay', 'Apple Pay')
-    }
-
-    async function startCheckoutLite(e) {
-      e.preventDefault()
-      if (!checkoutLiteMethod) return
-
-      const sessionData = await getCheckoutSession()
-      const { checkout_session: checkoutSession, country: countryCode } = sessionData
-      const baseAmount = sessionData.amount?.value ?? 10
-      const currency = sessionData.amount?.currency ?? 'USD'
-
-      const publicApiKey = await getPublicApiKey()
-      const yuno = await Yuno.initialize(publicApiKey)
-
-      // ── External-button path (PayPal, Google Pay, Apple Pay) ──────────────
-      if (EXTERNAL_BUTTON_METHODS.has(checkoutLiteMethod)) {
-        const extOverlay = document.getElementById('ext-btn-overlay')
-        document.getElementById('ext-btn-title').textContent =
-          `Pay with ${formatMethodName(checkoutLiteMethod)}`
-        document.getElementById('ext-btn-container').innerHTML =
-          '<span id="ext-btn-loading" class="methods-loading">Loading…</span>'
-        extOverlay.style.display = 'flex'
-
-        await yuno.startCheckout({
-          checkoutSession,
-          elementSelector: '#root',
-          countryCode,
-          language: 'en',
-          showLoading: false,
-          renderMode: {
-            type: 'modal',
-            elementSelector: {
-              apmForm: '#form-element',
-              actionForm: '#action-form-element',
-            },
-          },
-
-          async yunoCreatePayment(oneTimeToken) {
-            await createPayment({ oneTimeToken, checkoutSession })
-            yuno.continuePayment()
-          },
-
-          yunoPaymentResult(data) {
-            console.log('yunoPaymentResult', data)
-            yuno.hideLoader()
-            extOverlay.style.display = 'none'
-          },
-
-          yunoError: (error) => {
-            console.log('yunoError', error)
-            yuno.hideLoader()
-            if (error === 'CANCELED_BY_USER') extOverlay.style.display = 'none'
-          },
-        })
-
-        document.getElementById('ext-btn-loading').style.display = 'none'
-        await yuno.mountExternalButtons([{
-          paymentMethodType: checkoutLiteMethod,
-          elementSelector: '#ext-btn-container',
-        }])
-
-        document.getElementById('ext-btn-close').addEventListener('click', () => {
-          extOverlay.style.display = 'none'
-        })
-        extOverlay.addEventListener('click', (ev) => {
-          if (ev.target === extOverlay) extOverlay.style.display = 'none'
-        })
-        return
-      }
-
-      // ── Standard Checkout Lite path ────────────────────────────────────────
-      const surchargeConfirm = document.getElementById('surcharge-confirm')
-      let currentCheckoutSession = checkoutSession
-
-      function formatAmount(amt) {
-        return new Intl.NumberFormat('en', {
-          style: 'currency', currency,
-          minimumFractionDigits: 2, maximumFractionDigits: 2,
-        }).format(amt)
-      }
-
-      function showSurchargeConfirm(data) {
-        const { cardCountryCode, cardCountryName, surchargeRate, surchargeAmount, totalAmount, rateMayVary } = data
-
-        document.getElementById('sc-country').textContent = cardCountryName || cardCountryCode || 'Unknown'
-        document.getElementById('sc-rate').textContent = `${(surchargeRate * 100).toFixed(0)}%`
-        document.getElementById('sc-base').textContent = formatAmount(baseAmount)
-        document.getElementById('sc-fee').textContent = formatAmount(surchargeAmount)
-        document.getElementById('sc-total').textContent = formatAmount(totalAmount)
-
-        const disclaimer = document.getElementById('sc-disclaimer')
-        disclaimer.style.display = rateMayVary ? 'block' : 'none'
-
-        surchargeConfirm.style.display = 'flex'
-
-        return new Promise((resolve) => {
-          const backCardBtn = document.getElementById('sc-back-card')
-          const okBtn = document.getElementById('sc-ok')
-          const changeMethodBtn = document.getElementById('sc-change-method')
-
-          function onBackCard() { cleanup(); resolve('different-card') }
-          function onConfirm() { cleanup(); resolve('confirm') }
-          function onChangeMethod() { cleanup(); resolve('change-method') }
-
-          function cleanup() {
-            surchargeConfirm.style.display = 'none'
-            backCardBtn.removeEventListener('click', onBackCard)
-            okBtn.removeEventListener('click', onConfirm)
-            changeMethodBtn.removeEventListener('click', onChangeMethod)
-          }
-
-          backCardBtn.addEventListener('click', onBackCard)
-          okBtn.addEventListener('click', onConfirm)
-          changeMethodBtn.addEventListener('click', onChangeMethod)
-        })
-      }
-
-      await yuno.startCheckout({
-        checkoutSession,
-        elementSelector: '#root',
-        countryCode,
-        language: 'en',
-        showLoading: true,
-        renderMode: {
-          type: 'modal',
-          elementSelector: {
-            apmForm: '#form-element',
-            actionForm: '#action-form-element',
-          },
-        },
-
-        async yunoCreatePayment(oneTimeToken, tokenWithInfo) {
-          console.log('tokenWithInformation', tokenWithInfo)
-
-          if (checkoutLiteMethod !== 'CARD') {
-            await createPayment({ oneTimeToken, checkoutSession: currentCheckoutSession })
-            yuno.continuePayment()
-            return
-          }
-
-          yuno.hideLoader()
-
-          const feeData = await updateSessionFee({ checkoutSession: currentCheckoutSession, tokenWithInfo })
-
-          const result = await showSurchargeConfirm({
-            cardCountryCode: tokenWithInfo?.card_data?.country_code ?? null,
-            cardCountryName: tokenWithInfo?.card_data?.country_name ?? null,
-            surchargeRate: feeData.surchargeRate,
-            surchargeAmount: feeData.surchargeAmount,
-            totalAmount: feeData.totalAmount,
-            rateMayVary: !tokenWithInfo?.card_data?.country_code,
-          })
-
-          if (result === 'different-card') {
-            const newSessionData = await getCheckoutSession()
-            currentCheckoutSession = newSessionData.checkout_session
-            yuno.updateCheckoutSession(newSessionData.checkout_session)
-            yuno.mountCheckoutLite({ paymentMethodType: 'CARD' })
-            return
-          }
-
-          if (result === 'change-method') {
-            return
-          }
-
-          await createPayment({ oneTimeToken, checkoutSession: currentCheckoutSession })
-          yuno.continuePayment()
-        },
-
-        yunoPaymentResult(data) {
-          console.log('yunoPaymentResult', data)
-          yuno.hideLoader()
-        },
-
-        yunoError: (error) => {
-          console.log('There was an error', error)
-          yuno.hideLoader()
-        },
-      })
-
-      yuno.mountCheckoutLite({ paymentMethodType: checkoutLiteMethod })
-    }
-
-    async function startCheckoutFull(e) {
-      e.preventDefault()
-      const overlay = document.getElementById('checkout-full-overlay')
-      overlay.style.display = 'flex'
-
-      const sessionData = await getCheckoutSession()
-      const { checkout_session: checkoutSession, country: countryCode } = sessionData
-      const baseAmount = sessionData.amount?.value ?? 10
-      const currency = sessionData.amount?.currency ?? 'USD'
-
-      const publicApiKey = await getPublicApiKey()
-      const yuno = await Yuno.initialize(publicApiKey)
-
-      const surchargeNotice = document.getElementById('checkout-surcharge-notice')
-      const payBtn = document.getElementById('checkout-full-pay-btn')
-      let pendingCardOpen = false
-      let currentCheckoutSession = checkoutSession
-
-      function formatAmount(amt) {
-        return new Intl.NumberFormat('en', {
-          style: 'currency', currency,
-          minimumFractionDigits: 2, maximumFractionDigits: 2,
-        }).format(amt)
-      }
-
-      function showSurchargeConfirm(data) {
-        const { cardCountryCode, cardCountryName, surchargeRate, surchargeAmount, totalAmount, rateMayVary } = data
-        const surchargeConfirm = document.getElementById('surcharge-confirm')
-
-        document.getElementById('sc-country').textContent = cardCountryName || cardCountryCode || 'Unknown'
-        document.getElementById('sc-rate').textContent = `${(surchargeRate * 100).toFixed(0)}%`
-        document.getElementById('sc-base').textContent = formatAmount(baseAmount)
-        document.getElementById('sc-fee').textContent = formatAmount(surchargeAmount)
-        document.getElementById('sc-total').textContent = formatAmount(totalAmount)
-
-        const disclaimer = document.getElementById('sc-disclaimer')
-        disclaimer.style.display = rateMayVary ? 'block' : 'none'
-
-        surchargeConfirm.style.display = 'flex'
-
-        return new Promise((resolve) => {
-          const backCardBtn = document.getElementById('sc-back-card')
-          const okBtn = document.getElementById('sc-ok')
-          const changeMethodBtn = document.getElementById('sc-change-method')
-
-          function onBackCard() { cleanup(); resolve('different-card') }
-          function onConfirm() { cleanup(); resolve('confirm') }
-          function onChangeMethod() { cleanup(); resolve('change-method') }
-
-          function cleanup() {
-            surchargeConfirm.style.display = 'none'
-            backCardBtn.removeEventListener('click', onBackCard)
-            okBtn.removeEventListener('click', onConfirm)
-            changeMethodBtn.removeEventListener('click', onChangeMethod)
-          }
-
-          backCardBtn.addEventListener('click', onBackCard)
-          okBtn.addEventListener('click', onConfirm)
-          changeMethodBtn.addEventListener('click', onChangeMethod)
-        })
-      }
-
-      await yuno.startCheckout({
-        checkoutSession,
-        elementSelector: '#checkout-full-root',
-        countryCode,
-        language: 'en',
-        showLoading: true,
-        renderMode: {
-          type: 'modal',
-          elementSelector: {
-            apmForm: '#form-element',
-            actionForm: '#action-form-element',
-          },
-        },
-        card: { type: 'extends', styles: '' },
-
-        yunoPaymentMethodSelected(data) {
-          surchargeNotice.style.display = data.type === 'CARD' ? 'block' : 'none'
-          payBtn.style.display = 'flex'
-          if (data.type === 'CARD' && pendingCardOpen) {
-            pendingCardOpen = false
-            setTimeout(() => yuno.startPayment(), 500)
-          }
-        },
-
-        async yunoCreatePayment(oneTimeToken, tokenWithInfo) {
-          console.log('tokenWithInformation', tokenWithInfo)
-
-          const isCard = tokenWithInfo?.payment_method_type === 'CARD' ||
-                         tokenWithInfo?.card_data != null
-
-          if (!isCard) {
-            await createPayment({ oneTimeToken, checkoutSession: currentCheckoutSession })
-            yuno.continuePayment()
-            return
-          }
-
-          yuno.hideLoader()
-
-          const feeData = await updateSessionFee({ checkoutSession: currentCheckoutSession, tokenWithInfo })
-
-          const result = await showSurchargeConfirm({
-            cardCountryCode: tokenWithInfo?.card_data?.country_code ?? null,
-            cardCountryName: tokenWithInfo?.card_data?.country_name ?? null,
-            surchargeRate: feeData.surchargeRate,
-            surchargeAmount: feeData.surchargeAmount,
-            totalAmount: feeData.totalAmount,
-            rateMayVary: !tokenWithInfo?.card_data?.country_code,
-          })
-
-          if (result === 'different-card') {
-            pendingCardOpen = true
-            const nd = await getCheckoutSession()
-            currentCheckoutSession = nd.checkout_session
-            yuno.updateCheckoutSession(nd.checkout_session)
-            yuno.mountCheckout({ paymentMethodType: 'CARD' })
-            return
-          }
-
-          if (result === 'change-method') {
-            surchargeNotice.style.display = 'none'
-            payBtn.style.display = 'none'
-            const nd = await getCheckoutSession()
-            currentCheckoutSession = nd.checkout_session
-            yuno.updateCheckoutSession(nd.checkout_session)
-            yuno.mountCheckout()
-            return
-          }
-
-          await createPayment({ oneTimeToken, checkoutSession: currentCheckoutSession })
-          yuno.continuePayment()
-        },
-
-        yunoPaymentResult(data) {
-          console.log('yunoPaymentResult', data)
-          yuno.hideLoader()
-          overlay.style.display = 'none'
-        },
-
-        yunoError: (error) => {
-          console.log('yunoError', error)
-          yuno.hideLoader()
-          if (error === 'CANCELED_BY_USER') overlay.style.display = 'none'
-        },
-      })
-
-      yuno.mountCheckout()
-
-      payBtn.addEventListener('click', () => yuno.startPayment())
-
-      document.getElementById('checkout-full-close').addEventListener('click', () => {
-        overlay.style.display = 'none'
-      })
-      overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) overlay.style.display = 'none'
-      })
-    }
-
-    async function loadEnrollmentMethods() {
-      const container = document.getElementById('enrollment-methods')
-      container.innerHTML = '<span class="methods-loading">Loading available methods…</span>'
-
-      try {
-        const methods = await fetch('/enrollment/payment-methods').then(r => r.json())
-
-        if (!Array.isArray(methods) || methods.length === 0) {
-          container.innerHTML = '<span class="methods-empty">No methods available for current settings.</span>'
-          return
-        }
-
-        container.innerHTML = ''
-        methods.forEach(m => {
-          const btn = document.createElement('button')
-          btn.className = 'method-card'
-          btn.dataset.type = m.type
-          btn.innerHTML = `
-            <div class="method-icon-wrap">
-              ${m.icon ? `<img src="${m.icon}" alt="" class="method-icon">` : ''}
-            </div>
-            <span class="method-name">${m.name || m.type}</span>`
-
-          btn.addEventListener('click', async () => {
-            container.querySelectorAll('.method-card').forEach(c => c.classList.remove('selected'))
-            btn.classList.add('selected')
-            await fetch('/enrollment/method', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ method: m.type }),
-            })
-            document.getElementById('enrollment-link').classList.remove('page-link--disabled')
-          })
-          container.appendChild(btn)
-        })
-      } catch {
-        container.innerHTML = '<span class="methods-empty">Could not load methods.</span>'
-      }
-    }
-
-    async function startEnrollment(e) {
-      e.preventDefault()
-      const { enrollmentMethod } = await fetch('/settings').then(r => r.json())
-      if (!enrollmentMethod) return
-
-      const { customer_session: customerSession, country: countryCode } = await getCustomerSession()
-      await createEnrollment(customerSession)
-      const publicApiKey = await getPublicApiKey()
-      const yuno = await Yuno.initialize(publicApiKey)
-
-      yuno.mountEnrollmentLite({
-        customerSession,
-        countryCode,
-        language: 'en',
-        showLoading: true,
-        renderMode: {
-          type: 'modal',
-          elementSelector: {
-            apmForm: '#form-element',
-            actionForm: '#action-form-element',
-          },
-        },
-        yunoEnrollmentStatus: ({ status, vaultedToken }) => {
-          console.log('enrollment status', { status, vaultedToken })
-        },
-        yunoError: (error) => {
-          console.log('enrollment error', error)
-        },
-      })
-    }
-
-    async function init() {
-      const [currentSettings, countries] = await Promise.all([
-        fetch('/settings').then(r => r.json()),
-        loadCountries(),
-      ])
-
-      populateSelect(countries, currentSettings.country)
-      document.getElementById('amount').value = currentSettings.amount
-
-      document.getElementById('country').addEventListener('change', updateCurrency)
-
-      document.getElementById('apply-settings').addEventListener('click', async () => {
-        const country = document.getElementById('country').value
-        const amount = parseInt(document.getElementById('amount').value) || 10
-        const currency = countryMap[country] ?? 'USD'
-        const status = document.getElementById('settings-status')
-
-        const result = await fetch('/settings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ country, amount, currency }),
-        }).then(r => r.json())
-
-        status.textContent = `✓ Saved: ${result.country} · ${result.currency} ${result.amount}`
-        setTimeout(() => { status.textContent = '' }, 3000)
-
-        checkoutLiteMethod = null
-        document.getElementById('checkout-lite-link').classList.add('page-link--disabled')
-        document.getElementById('enrollment-link').classList.add('page-link--disabled')
-        if (document.getElementById('checkout-lite-folder').open) loadCheckoutLiteMethods()
-        if (document.getElementById('enrollment-folder').open) loadEnrollmentMethods()
-      })
-
-      document.getElementById('checkout-lite-folder').addEventListener('toggle', (e) => {
-        if (e.target.open) loadCheckoutLiteMethods()
-      })
-
-      document.getElementById('enrollment-folder').addEventListener('toggle', (e) => {
-        if (e.target.open) loadEnrollmentMethods()
-      })
-
-      document.getElementById('checkout-full-link').addEventListener('click', startCheckoutFull)
-      document.getElementById('checkout-lite-link').addEventListener('click', startCheckoutLite)
-      document.getElementById('enrollment-link').addEventListener('click', startEnrollment)
-    }
-
-    window.addEventListener('yuno-sdk-ready', () => init())
-  </script>
-
-  <!-- Yuno SDK -->
-  <script src="https://sdk-web.y.uno/v1.5/main.js" defer></script>
 </body>
 </html>

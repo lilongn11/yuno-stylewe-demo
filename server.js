@@ -17,173 +17,66 @@ const SERVER_PORT = 8080
 
 let CUSTOMER_ID
 
-const sessions = new Map()    // checkout_session token → { id, baseAmount, currency, country }
-const sessionFees = new Map() // checkout_session token → { surchargeRate, surcharge, totalAmount }
-let settings = { country: 'US', amount: 10, currency: 'USD', enrollmentMethod: null }
-
-const staticDirectory = path.join(__dirname, 'static')
-const indexPage = path.join(__dirname, 'pages/index.html')
-const checkoutPage = path.join(__dirname, 'pages/checkout.html')
-const checkoutSeamlessPage = path.join(__dirname, 'pages/checkout-seamless.html')
-const enrollmentLitePage = path.join(__dirname, 'pages/enrollment-lite.html')
-
 const app = express()
 
 app.use(express.json())
-app.use('/static', express.static(staticDirectory))
+app.use('/static', express.static(path.join(__dirname, 'static')))
 
+// Pages
 app.get('/', (req, res) => {
-  res.sendFile(indexPage)
+  res.sendFile(path.join(__dirname, 'pages/index.html'))
 })
 
 app.get('/checkout', (req, res) => {
-  res.sendFile(checkoutPage)
+  res.sendFile(path.join(__dirname, 'pages/checkout.html'))
 })
 
-app.get('/checkout-seamless', (req, res) => {
-  res.sendFile(checkoutSeamlessPage)
-})
-
-app.get('/enrollment-lite', (req, res) => {
-  res.sendFile(enrollmentLitePage)
-})
-
+// API: public key
 app.get('/public-api-key', (req, res) => {
   res.json({ publicApiKey: PUBLIC_API_KEY })
 })
 
-app.get('/settings', (req, res) => {
-  res.json(settings)
-})
-
-app.post('/settings', (req, res) => {
-  const { country, amount, currency } = req.body
-  if (!country || !amount || !currency) {
-    return res.status(400).json({ error: 'country, amount, and currency are required' })
-  }
-  settings = { country, amount: parseInt(amount), currency }
-  res.json(settings)
-})
-
+// API: create checkout session
 app.post('/checkout/sessions', async (req, res) => {
-  const { country, amount: baseAmount, currency } = settings
+  const country = req.query.country || 'CO'
+  const price = req.query.price || '15'
+  const plan = req.query.plan || 'moderato'
 
-  const response = await fetch(
-    `${API_URL}/v1/checkout/sessions`,
-    {
-      method: 'POST',
-      headers: {
-        'public-api-key': PUBLIC_API_KEY,
-        'private-secret-key': PRIVATE_SECRET_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        account_id: ACCOUNT_CODE,
-        merchant_order_id: v4(),
-        payment_description: 'HEG Demo Payment',
-        country,
-        customer_id: CUSTOMER_ID,
-        amount: {
-          currency,
-          value: baseAmount,
-        },
-      }),
-    }
-  ).then((resp) => resp.json())
+  // Use USD for all plans — amount in cents
+  const amount = parseFloat(price)
 
-  if (response.checkout_session) {
-    sessions.set(response.checkout_session, {
-      id: response.id,
-      baseAmount,
-      currency,
-      country,
-    })
-  }
-
-  res.send(response)
-})
-
-app.post('/checkout/seamless/sessions', async (req, res) => {
-  const { country, amount: baseAmount, currency } = settings
-
-  const response = await fetch(
-    `${API_URL}/v1/checkout/sessions`,
-    {
-      method: 'POST',
-      headers: {
-        'public-api-key': PUBLIC_API_KEY,
-        'private-secret-key': PRIVATE_SECRET_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        account_id: ACCOUNT_CODE,
-        merchant_order_id: v4(),
-        payment_description: 'HEG Demo Payment',
-        country,
-        customer_id: CUSTOMER_ID,
-        amount: {
-          currency,
-          value: baseAmount,
-        },
-      }),
-    }
-  ).then((resp) => resp.json())
-
-  if (response.checkout_session) {
-    sessions.set(response.checkout_session, {
-      id: response.id,
-      baseAmount,
-      currency,
-      country,
-    })
-  }
-
-  res.send(response)
-})
-
-app.post('/session/update-fee', async (req, res) => {
-  const { checkoutSession, tokenWithInfo } = req.body
-
-  const sessionData = sessions.get(checkoutSession)
-  if (!sessionData) {
-    return res.status(400).json({ error: 'Session not found' })
-  }
-
-  const { id: sessionId, baseAmount, currency } = sessionData
-  const cardCountryCode = tokenWithInfo?.card_data?.country_code ?? null
-  const surchargeRate = cardCountryCode === 'SG' ? 0.01 : 0.02
-  const surcharge = Math.round(baseAmount * surchargeRate * 100) / 100
-  const totalAmount = baseAmount + surcharge
-
-  await fetch(`${API_URL}/v1/checkout/sessions/${sessionId}`, {
-    method: 'PATCH',
+  const response = await fetch(`${API_URL}/v1/checkout/sessions`, {
+    method: 'POST',
     headers: {
       'public-api-key': PUBLIC_API_KEY,
       'private-secret-key': PRIVATE_SECRET_KEY,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      amount: { currency, value: totalAmount },
+      account_id: ACCOUNT_CODE,
+      merchant_order_id: 'KIMI-' + Date.now(),
+      payment_description: `Kimi AI ${plan.charAt(0).toUpperCase() + plan.slice(1)} Subscription`,
+      country,
+      customer_id: CUSTOMER_ID,
+      amount: {
+        currency: 'USD',
+        value: amount,
+      },
     }),
-  })
+  }).then((resp) => resp.json())
 
-  sessionFees.set(checkoutSession, { surchargeRate, surcharge, totalAmount })
-
-  res.json({ surchargeRate, surchargeAmount: surcharge, totalAmount, currency })
+  res.json(response)
 })
 
+// API: create payment
 app.post('/payments', async (req, res) => {
   const { checkoutSession, oneTimeToken } = req.body
-
-  const sessionData = sessions.get(checkoutSession)
-  const country = sessionData?.country ?? settings.country
-  const currency = sessionData?.currency ?? settings.currency
+  const country = req.query.country || 'CO'
+  const price = req.query.price || '15'
   const { documentNumber, documentType } = getCountryData(country)
 
-  const baseAmount = sessionData?.baseAmount ?? settings.amount
-  const feeData = sessionFees.get(checkoutSession)
-  const surcharge = feeData?.surcharge ?? 0
-  const totalAmount = feeData?.totalAmount ?? baseAmount
+  // USD amount in cents matching the checkout session
+  const amount = parseFloat(price)
 
   const response = await fetch(`${API_URL}/v1/payments`, {
     method: 'POST',
@@ -194,67 +87,27 @@ app.post('/payments', async (req, res) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      description: 'HEG Demo Payment',
+      description: 'Kimi AI Subscription Payment',
       account_id: ACCOUNT_CODE,
-      merchant_order_id: v4(),
+      merchant_order_id: 'KIMI-' + Date.now(),
       country,
-      additional_data: {
-        order: {
-          fee_amount: surcharge,
-          items: [
-            {
-              brand: 'HEG',
-              category: 'Services',
-              id: 'HEG-001',
-              name: 'HEG Service',
-              quantity: 1,
-              unit_amount: baseAmount,
-            },
-          ],
-        },
-      },
       amount: {
-        currency,
-        value: totalAmount,
+        currency: 'USD',
+        value: amount,
       },
       checkout: {
         session: checkoutSession,
       },
       customer_payer: {
-        billing_address: {
-          address_line_1: 'Calle 34 # 56 - 78',
-          address_line_2: 'Apartamento 502, Torre I',
-          city: 'Bogota',
-          country,
-          state: 'Cundinamarca',
-          zip_code: '111111',
-        },
-        date_of_birth: '1990-02-28',
-        device_fingerprint: 'hi88287gbd8d7d782ge',
+        first_name: 'John',
+        last_name: 'Doe',
+        email: 'max.li@y.uno',
         document: {
           document_type: documentType,
           document_number: documentNumber,
         },
-        email: 'pepitoperez@y.uno',
-        first_name: 'Pepito',
-        gender: 'MALE',
         id: CUSTOMER_ID,
-        ip_address: '192.168.123.167',
-        last_name: 'Perez',
-        merchant_customer_id: 'example00234',
-        nationality: country,
-        phone: {
-          country_code: '57',
-          number: '3132450765',
-        },
-        shipping_address: {
-          address_line_1: 'Calle 34 # 56 - 78',
-          address_line_2: 'Apartamento 502, Torre I',
-          city: 'Bogota',
-          country,
-          state: 'Cundinamarca',
-          zip_code: '111111',
-        },
+        merchant_customer_id: 'kimi-user-001',
       },
       payment_method: {
         token: oneTimeToken,
@@ -266,142 +119,28 @@ app.post('/payments', async (req, res) => {
   res.json(response)
 })
 
-app.get('/enrollment/payment-methods', async (req, res) => {
-  const { country } = settings
-
-  // Create a customer session to query enrollable payment methods
-  const sessionRes = await fetch(`${API_URL}/v1/customers/sessions`, {
-    method: 'POST',
-    headers: {
-      'public-api-key': PUBLIC_API_KEY,
-      'private-secret-key': PRIVATE_SECRET_KEY,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      account_id: ACCOUNT_CODE,
-      country,
-      customer_id: CUSTOMER_ID,
-    }),
-  }).then(r => r.json())
-
-  if (!sessionRes.customer_session) {
-    return res.status(500).json({ error: 'Failed to create customer session', detail: sessionRes })
-  }
-
-  const methodsRes = await fetch(
-    `${API_URL}/v1/checkout/customers/sessions/${sessionRes.customer_session}/payment-methods`,
+// API: get payment methods for checkout session
+app.get('/payment-methods/:checkoutSession', async (req, res) => {
+  const checkoutSession = req.params.checkoutSession
+  const response = await fetch(
+    `${API_URL}/v1/checkout/sessions/${checkoutSession}/payment-methods`,
     {
       method: 'GET',
       headers: {
         'public-api-key': PUBLIC_API_KEY,
         'private-secret-key': PRIVATE_SECRET_KEY,
-      },
-    }
-  ).then(r => r.json())
-
-  res.json(methodsRes.payment_methods ?? [])
-})
-
-app.get('/checkout/payment-methods', async (req, res) => {
-  const { country, amount: baseAmount, currency } = settings
-
-  // Create a checkout session to query available payment methods
-  const sessionRes = await fetch(`${API_URL}/v1/checkout/sessions`, {
-    method: 'POST',
-    headers: {
-      'public-api-key': PUBLIC_API_KEY,
-      'private-secret-key': PRIVATE_SECRET_KEY,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      account_id: ACCOUNT_CODE,
-      merchant_order_id: v4(),
-      payment_description: 'HEG Demo Payment',
-      country,
-      customer_id: CUSTOMER_ID,
-      amount: { currency, value: baseAmount },
-    }),
-  }).then(r => r.json())
-
-  if (!sessionRes.checkout_session) {
-    return res.status(500).json({ error: 'Failed to create checkout session', detail: sessionRes })
-  }
-
-  const methodsRes = await fetch(
-    `${API_URL}/v1/checkout/sessions/${sessionRes.checkout_session}/payment-methods`,
-    {
-      method: 'GET',
-      headers: {
-        'public-api-key': PUBLIC_API_KEY,
-        'private-secret-key': PRIVATE_SECRET_KEY,
-      },
-    }
-  ).then(r => r.json())
-
-  res.json(Array.isArray(methodsRes) ? methodsRes : (methodsRes.payment_methods ?? []))
-})
-
-app.post('/enrollment/method', (req, res) => {
-  const { method } = req.body
-  if (!method) return res.status(400).json({ error: 'method is required' })
-  settings.enrollmentMethod = method
-  res.json({ enrollmentMethod: settings.enrollmentMethod })
-})
-
-app.post('/customers/sessions', async (req, res) => {
-  const { country } = settings
-
-  const response = await fetch(
-    `${API_URL}/v1/customers/sessions`,
-    {
-      method: 'POST',
-      headers: {
-        'public-api-key': PUBLIC_API_KEY,
-        'private-secret-key': PRIVATE_SECRET_KEY,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        account_id: ACCOUNT_CODE,
-        country,
-        customer_id: CUSTOMER_ID,
-      }),
     }
-  ).then((resp) => resp.json())
-
-  res.json(response)
-})
-
-app.post('/customers/sessions/:customerSession/payment-methods', async (req, res) => {
-  const { customerSession } = req.params
-  const { country } = settings
-
-  const response = await fetch(
-    `${API_URL}/v1/customers/sessions/${customerSession}/payment-methods`,
-    {
-      method: 'POST',
-      headers: {
-        'public-api-key': PUBLIC_API_KEY,
-        'private-secret-key': PRIVATE_SECRET_KEY,
-        'X-idempotency-key': v4(),
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        payment_method_type: settings.enrollmentMethod ?? 'CARD',
-        country,
-        account_id: ACCOUNT_CODE,
-      }),
-    }
-  ).then((resp) => resp.json())
-
-  res.json(response)
+  )
+  const paymentMethods = await response.json()
+  res.json(paymentMethods)
 })
 
 app.listen(SERVER_PORT, async () => {
-  console.log(`Server started at port: ${SERVER_PORT}`)
-  console.log(`Demo available at: http://localhost:${SERVER_PORT}`)
+  console.log(`Server started at http://localhost:${SERVER_PORT}`)
 
   API_URL = generateBaseUrlApi()
-
   CUSTOMER_ID = await createCustomer().then(({ id }) => id)
   console.log(`Customer created: ${CUSTOMER_ID}`)
 
@@ -424,22 +163,19 @@ function generateBaseUrlApi() {
 }
 
 function createCustomer() {
-  return fetch(
-    `${API_URL}/v1/customers`,
-    {
-      method: 'POST',
-      headers: {
-        'public-api-key': PUBLIC_API_KEY,
-        'private-secret-key': PRIVATE_SECRET_KEY,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        country: 'CO',
-        merchant_customer_id: Math.floor(Math.random() * 1000000).toString(),
-        first_name: 'John',
-        last_name: 'Doe',
-        email: 'john.doe@y.uno',
-      }),
-    }
-  ).then((resp) => resp.json())
+  return fetch(`${API_URL}/v1/customers`, {
+    method: 'POST',
+    headers: {
+      'public-api-key': PUBLIC_API_KEY,
+      'private-secret-key': PRIVATE_SECRET_KEY,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      country: 'CO',
+      merchant_customer_id: Math.floor(Math.random() * 1000000).toString(),
+      first_name: 'John',
+      last_name: 'Doe',
+      email: 'max.li@y.uno',
+    }),
+  }).then((resp) => resp.json())
 }

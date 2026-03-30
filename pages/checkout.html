@@ -2,67 +2,116 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://assets-global.website-files.com/6277c350218d32e9e5dc0380/627e9998bb4b6124743a90fc_favicon-yuno32x32.png" rel="shortcut icon" type="image/x-icon"/>
-  <link href="https://assets-global.website-files.com/6277c350218d32e9e5dc0380/627e999c388c6cd2a87050e7_favicon-yuno256x256.png" rel="apple-touch-icon"/>
-  <title>Yuno Checkout — Demo</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter">
+  <title>Checkout - Kimi AI</title>
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <!-- SDK mounts here -->
-  <div id="root"></div>
+  <div class="checkout">
+    <div class="checkout-layout">
+      <a href="/" class="checkout-back">&larr; Back to plans</a>
 
-  <!-- APM form containers -->
-  <div id="form-element"></div>
-  <div id="action-form-element"></div>
+      <div class="checkout-columns">
+        <!-- LEFT: Order Summary -->
+        <div class="checkout-left">
+          <div class="checkout-summary">
+            <div class="checkout-plan-name" id="plan-name">Loading...</div>
+            <div class="checkout-plan-desc">Kimi AI Subscription - <span id="plan-billing-label">Billed annually</span></div>
+            <div class="checkout-plan-breakdown">
+              <span class="label">Monthly</span>
+              <span class="value"><span id="plan-original-price"></span> <span id="plan-monthly">--</span></span>
+            </div>
+            <div class="checkout-plan-breakdown" id="discount-row" style="display:none;">
+              <span class="label">Discount</span>
+              <span class="value discount" id="plan-discount">--</span>
+            </div>
+            <div class="checkout-plan-price">
+              <span class="label">Total today</span>
+              <span class="amount" id="plan-price">--</span>
+            </div>
+          </div>
+        </div>
 
-  <!-- Surcharge notice — hidden until a card payment method is selected -->
-  <div id="surcharge-notice">
-    <span>&#9432;</span>
-    A processing fee applies to card payments: 1% for Singapore-issued cards, 2% for all other cards.
-  </div>
+        <!-- RIGHT: Payment Methods + SDK -->
+        <div class="checkout-right">
+          <div class="payment-methods-title">Select payment method</div>
+          <div class="payment-methods" id="payment-methods">
+            <div class="payment-method-card selected" data-method="CARD">
+              <div class="payment-method-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
+                  <line x1="1" y1="10" x2="23" y2="10"/>
+                </svg>
+              </div>
+              <div class="payment-method-info">
+                <div class="payment-method-name">Credit or Debit Card</div>
+                <div class="payment-method-desc">Visa, Mastercard, Amex</div>
+              </div>
+              <div class="payment-method-radio"></div>
+            </div>
 
-  <!-- Surcharge confirmation modal — shown before payment is submitted -->
-  <div id="surcharge-confirm" style="display:none;">
-    <div id="surcharge-confirm__inner">
-      <h3>Confirm Payment</h3>
-      <div class="sc-row"><span>Card origin</span><span id="sc-country">—</span></div>
-      <div class="sc-row"><span>Surcharge rate</span><span id="sc-rate">—</span></div>
-      <div class="sc-row"><span>Base amount</span><span id="sc-base">—</span></div>
-      <div class="sc-row sc-row--fee"><span>Processing fee</span><span id="sc-fee">—</span></div>
-      <div class="sc-row sc-row--total"><span>Total</span><span id="sc-total">—</span></div>
-      <p id="sc-disclaimer" style="display:none;">
-        &#9888; Card origin could not be determined. Applying standard 2% rate.
-      </p>
-      <div class="sc-actions">
-        <button id="sc-back-card">Use different card</button>
-        <button id="sc-ok">Confirm &amp; Pay</button>
-      </div>
-      <div class="sc-actions-secondary">
-        <button id="sc-change-method">&#8592; Change payment method</button>
+            <!-- SDK card form — hidden until loaded -->
+            <div id="sdk-form-wrapper">
+              <div id="root"></div>
+              <div id="form-element"></div>
+              <div id="action-form-element"></div>
+            </div>
+
+            <div class="payment-method-card" data-method="PAYPAL">
+              <div class="payment-method-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 2.23A.774.774 0 0 1 5.708 1.6h6.268c2.08 0 3.536.456 4.328 1.356.372.42.612.876.724 1.392.12.54.12 1.188-.004 1.98l-.012.064v.56l.436.248c.368.196.66.42.884.672.372.42.612.948.712 1.568.104.64.068 1.38-.1 2.204-.196.944-.512 1.768-.944 2.444-.396.624-.9 1.14-1.5 1.528-.576.372-1.26.648-2.028.816-.744.168-1.592.248-2.52.248h-.6a1.2 1.2 0 0 0-.768.28 1.22 1.22 0 0 0-.42.696l-.044.248-.748 4.736-.032.18a.146.146 0 0 1-.044.096.14.14 0 0 1-.088.032H7.076z" fill="#253B80"/>
+                  <path d="M19.45 7.016c-.012.08-.028.164-.044.248-1.42 7.292-6.28 9.816-12.488 9.816H5.304a.774.774 0 0 0-.764.656l-1.22 7.736-.344 2.192a.407.407 0 0 0 .4.468h2.828c.34 0 .628-.244.68-.576l.028-.144.54-3.412.036-.188a.685.685 0 0 1 .68-.576h.428c2.776 0 4.948-.888 5.584-3.452.264-1.072.128-1.968-.288-2.596a2.2 2.2 0 0 0-.628-.54l.688-4.092.02-.14z" fill="#179BD7"/>
+                  <path d="M18.344 6.576a5.6 5.6 0 0 0-.696-.152 8.84 8.84 0 0 0-1.404-.104h-4.252a.683.683 0 0 0-.676.576l-.904 5.74-.028.168a.774.774 0 0 1 .764-.656h1.616c3.124 0 5.568-1.268 6.284-4.94.02-.108.04-.216.056-.32a3.64 3.64 0 0 0-.764-.312z" fill="#222D65"/>
+                </svg>
+              </div>
+              <div class="payment-method-info">
+                <div class="payment-method-name">PayPal</div>
+                <div class="payment-method-desc">Pay with your PayPal account</div>
+              </div>
+              <div class="payment-method-radio"></div>
+            </div>
+
+            <div id="paypal-wrapper" style="display:none;">
+              <div id="paypal" style="min-height:48px;"></div>
+            </div>
+
+            <div class="payment-method-card" data-method="GOOGLE_PAY">
+              <div class="payment-method-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174-4.095 0-7.439-3.389-7.439-7.574s3.345-7.574 7.439-7.574c2.33 0 3.891.992 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0c-6.635 0-12 5.365-12 12s5.365 12 12 12c6.926 0 11.52-4.869 11.52-11.726 0-.788-.085-1.39-.189-1.989H12.24z" fill="#4285F4"/>
+                  <path d="M12.24 10.285V14.4h6.806c-.275 1.765-2.056 5.174-6.806 5.174a7.58 7.58 0 0 1-5.262-2.114l-3.652 2.832A11.95 11.95 0 0 0 12.24 24c6.635 0 12-5.365 12-12 0-.788-.085-1.39-.189-1.989H12.24z" fill="#34A853" opacity=".5"/>
+                  <path d="M4.978 14.46A7.52 7.52 0 0 1 4.56 12c0-.86.152-1.693.418-2.46L1.326 6.708A11.96 11.96 0 0 0 .24 12c0 1.936.465 3.764 1.086 5.292l3.652-2.832z" fill="#FBBC05"/>
+                  <path d="M12.24 4.426c2.33 0 3.891.992 4.785 1.849l3.254-3.138C18.189 1.186 15.479 0 12.24 0 7.582 0 3.546 2.676 1.326 6.708l3.652 2.832c.87-2.606 3.3-5.114 7.262-5.114z" fill="#EA4335"/>
+                </svg>
+              </div>
+              <div class="payment-method-info">
+                <div class="payment-method-name">Google Pay</div>
+                <div class="payment-method-desc">Fast checkout with Google</div>
+              </div>
+              <div class="payment-method-radio"></div>
+            </div>
+
+            <div id="google-pay-wrapper" style="display:none;">
+              <div id="google-pay" style="min-height:48px;"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Merchant pay button -->
-  <button id="button-pay">Pay Now</button>
-
-  <!-- External payment buttons — shown below card when ?external=true -->
-  <div id="external-buttons" style="display:none;">
-    <div class="external-btn-row"><div id="paypal-btn"></div></div>
-    <div class="external-btn-row"><div id="google-pay-btn"></div></div>
-    <div class="external-btn-row"><div id="apple-pay-btn"></div></div>
+  <!-- Payment Result Overlay -->
+  <div class="payment-result" id="payment-result">
+    <div class="result-card">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-title" id="result-title"></div>
+      <div class="result-message" id="result-message"></div>
+      <a href="/" class="result-button">Back to Plans</a>
+    </div>
   </div>
 
-  <!-- Loader overlay -->
-  <loader-message id="loader" style="display:none;"></loader-message>
-
-  <script src="/static/loader.js" type="module"></script>
-  <script type="module" src="/static/checkout.js"></script>
-
-  <!-- Yuno SDK -->
+  <script type="module" src="/static/checkout-lite.js"></script>
   <script src="https://sdk-web.y.uno/v1.5/main.js" defer></script>
 </body>
 </html>

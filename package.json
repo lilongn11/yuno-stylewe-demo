@@ -1,10 +1,11 @@
 {
-  "name": "yuno-heg-demo",
+  "name": "kimi-yuno-demo",
   "version": "1.0.0",
-  "description": "Yuno Full Checkout demo for HEG",
+  "description": "Kimi AI pricing demo with Yuno Checkout Lite integration",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "echo \"No tests\" && exit 0"
   },
   "dependencies": {
     "dotenv": "^16.0.1",

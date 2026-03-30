@@ -15,27 +15,6 @@ exports.getCountryData = function getCountryData(country) {
       currency: "BRL",
       amount: Math.floor(Math.random() * (1000 + 1) + 10),
     };
-  } else if (country == "AR") {
-    countryData = {
-      documentType: "PASS",
-      documentNumber: "123554332",
-      currency: "ARS",
-      amount: Math.floor(Math.random() * (1000 + 1) + 10),
-    };
-  } else if (country == "CL") {
-    countryData = {
-      documentType: "CI",
-      documentNumber: "80209924",
-      currency: "CLP",
-      amount: Math.floor(Math.random() * (1000 + 1) + 10),
-    };
-  } else if (country == "SG") {
-    countryData = {
-      documentType: "PASS",
-      documentNumber: "T12345",
-      currency: "SGD",
-      amount: 100,
-    };
   } else {
     countryData = {
       documentType: "PASS",

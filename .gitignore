@@ -1,4 +1,9 @@
 .env
+.env_heg
 node_modules/
 CLAUDE.md
 sample/
+docs/
+.DS_Store
+Kimi AI with K2.5 _ Visual Coding Meets Agent Swarm.html
+Kimi AI with K2.5 _ Visual Coding Meets Agent Swarm_files/
