@@ -41,8 +41,8 @@ app.post('/checkout/sessions', async (req, res) => {
   const country = req.query.country || 'CO'
   const price = req.query.price || '15'
   const plan = req.query.plan || 'moderato'
+  await getCustomerId()
 
-  // Use USD for all plans — amount in cents
   const amount = parseFloat(price)
 
   const response = await fetch(`${API_URL}/v1/checkout/sessions`, {
@@ -137,15 +137,28 @@ app.get('/payment-methods/:checkoutSession', async (req, res) => {
   res.json(paymentMethods)
 })
 
-app.listen(SERVER_PORT, async () => {
-  console.log(`Server started at http://localhost:${SERVER_PORT}`)
+// Lazy customer creation — don't block server startup
+let customerPromise = null
+function getCustomerId() {
+  if (!customerPromise) {
+    customerPromise = createCustomer().then(({ id }) => {
+      console.log(`Customer created: ${id}`)
+      CUSTOMER_ID = id
+      return id
+    })
+  }
+  return customerPromise
+}
 
+app.listen(SERVER_PORT, () => {
+  console.log(`Server started at http://localhost:${SERVER_PORT}`)
   API_URL = generateBaseUrlApi()
-  CUSTOMER_ID = await createCustomer().then(({ id }) => id)
-  console.log(`Customer created: ${CUSTOMER_ID}`)
+
+  // Start customer creation in background, don't await
+  getCustomerId()
 
   if (process.env.NODE_ENV !== 'production') {
-    await open(`http://localhost:${SERVER_PORT}`)
+    open(`http://localhost:${SERVER_PORT}`)
   }
 })
 
