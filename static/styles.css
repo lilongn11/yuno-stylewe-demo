@@ -424,6 +424,13 @@ body {
   gap: 6px;
 }
 
+/* Remove gap between payment option and its form */
+.payment-method-card.form-open + #sdk-form-wrapper,
+.payment-method-card.form-open + #paypal-wrapper,
+.payment-method-card.form-open + #google-pay-wrapper {
+  margin-top: -6px;
+}
+
 .payment-method-card {
   display: flex;
   align-items: center;
@@ -443,6 +450,14 @@ body {
 .payment-method-card.selected {
   border-color: var(--Colors-KMBlue);
   background: rgba(23, 131, 255, 0.03);
+}
+
+/* When form is open below, merge card option with form into one box */
+.payment-method-card.form-open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-bottom: none;
+  margin-bottom: 0;
 }
 
 .payment-method-icon {
@@ -507,11 +522,11 @@ body {
 #sdk-form-wrapper {
   display: none;
   background: var(--BgGp-Primary);
-  border: .5px solid var(--Separators-S1);
+  border: .5px solid var(--Colors-KMBlue);
   border-top: none;
   border-radius: 0 0 10px 10px;
-  padding: 0 14px 14px;
-  margin-top: -3px;
+  padding: 14px 6px 6px;
+  margin-top: 0;
 }
 
 #sdk-form-wrapper.loading {
@@ -533,10 +548,6 @@ body {
   display: none;
 }
 
-.payment-method-card.selected + #sdk-form-wrapper.loaded {
-  border-color: var(--Colors-KMBlue);
-  border-top: none;
-}
 
 #root {
   min-height: 0;
@@ -549,12 +560,18 @@ body {
 /* External payment button wrappers */
 #paypal-wrapper,
 #google-pay-wrapper {
+  display: none;
   background: var(--BgGp-Primary);
-  border: .5px solid var(--Separators-S1);
+  border: .5px solid var(--Colors-KMBlue);
   border-top: none;
   border-radius: 0 0 10px 10px;
-  padding: 14px;
-  margin-top: -3px;
+  padding: 14px 6px 6px;
+  margin-top: -6px;
+}
+
+#paypal-wrapper.open,
+#google-pay-wrapper.open {
+  display: block;
 }
 
 #paypal, #google-pay {

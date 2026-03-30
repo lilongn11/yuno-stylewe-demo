@@ -120,20 +120,24 @@ function selectMethod(method) {
   const googlePayWrapper = document.getElementById('google-pay-wrapper')
 
   // Hide all form areas
-  sdkForm.classList.remove('loaded')
-  paypalWrapper.style.display = 'none'
-  googlePayWrapper.style.display = 'none'
+  sdkForm.classList.remove('loaded', 'loading')
+  paypalWrapper.classList.remove('open')
+  googlePayWrapper.classList.remove('open')
+  document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('form-open'))
 
   if (method === 'CARD') {
+    document.querySelector('[data-method="CARD"]').classList.add('form-open')
     sdkForm.classList.add('loading')
     yuno.mountCheckoutLite({
       paymentMethodType: 'CARD',
       vaultedToken: null,
     })
   } else if (method === 'PAYPAL') {
-    paypalWrapper.style.display = 'block'
+    document.querySelector('[data-method="PAYPAL"]').classList.add('form-open')
+    paypalWrapper.classList.add('open')
   } else if (method === 'GOOGLE_PAY') {
-    googlePayWrapper.style.display = 'block'
+    document.querySelector('[data-method="GOOGLE_PAY"]').classList.add('form-open')
+    googlePayWrapper.classList.add('open')
   }
 }
 
