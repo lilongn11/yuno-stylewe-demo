@@ -31,6 +31,10 @@ app.get('/checkout', (req, res) => {
   res.sendFile(path.join(__dirname, 'pages/checkout.html'))
 })
 
+app.get('/checkout/lite', (req, res) => {
+  res.sendFile(path.join(__dirname, 'pages/checkout-lite.html'))
+})
+
 // API: public key
 app.get('/public-api-key', (req, res) => {
   res.json({ publicApiKey: PUBLIC_API_KEY })
@@ -38,12 +42,8 @@ app.get('/public-api-key', (req, res) => {
 
 // API: create checkout session
 app.post('/checkout/sessions', async (req, res) => {
-  const country = req.query.country || 'CO'
-  const price = req.query.price || '15'
-  const plan = req.query.plan || 'moderato'
+  const country = req.query.country || 'US'
   await getCustomerId()
-
-  const amount = parseFloat(price)
 
   const response = await fetch(`${API_URL}/v1/checkout/sessions`, {
     method: 'POST',
@@ -54,13 +54,13 @@ app.post('/checkout/sessions', async (req, res) => {
     },
     body: JSON.stringify({
       account_id: ACCOUNT_CODE,
-      merchant_order_id: 'KIMI-' + Date.now(),
-      payment_description: `Kimi AI ${plan.charAt(0).toUpperCase() + plan.slice(1)} Subscription`,
+      merchant_order_id: 'SW-' + Date.now(),
+      payment_description: 'StyleWe Order - Urban Plain Mini Denim Skirt',
       country,
       customer_id: CUSTOMER_ID,
       amount: {
         currency: 'USD',
-        value: amount,
+        value: 31.68,
       },
     }),
   }).then((resp) => resp.json())
@@ -71,12 +71,8 @@ app.post('/checkout/sessions', async (req, res) => {
 // API: create payment
 app.post('/payments', async (req, res) => {
   const { checkoutSession, oneTimeToken } = req.body
-  const country = req.query.country || 'CO'
-  const price = req.query.price || '15'
+  const country = req.query.country || 'US'
   const { documentNumber, documentType } = getCountryData(country)
-
-  // USD amount in cents matching the checkout session
-  const amount = parseFloat(price)
 
   const response = await fetch(`${API_URL}/v1/payments`, {
     method: 'POST',
@@ -87,27 +83,34 @@ app.post('/payments', async (req, res) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      description: 'Kimi AI Subscription Payment',
+      description: 'StyleWe Order Payment',
       account_id: ACCOUNT_CODE,
-      merchant_order_id: 'KIMI-' + Date.now(),
+      merchant_order_id: 'SW-' + Date.now(),
       country,
       amount: {
         currency: 'USD',
-        value: amount,
+        value: 31.68,
       },
       checkout: {
         session: checkoutSession,
       },
       customer_payer: {
-        first_name: 'John',
-        last_name: 'Doe',
+        first_name: 'Max',
+        last_name: 'Li',
         email: 'max.li@y.uno',
         document: {
           document_type: documentType,
           document_number: documentNumber,
         },
         id: CUSTOMER_ID,
-        merchant_customer_id: 'kimi-user-001',
+        merchant_customer_id: 'stylewe-user-001',
+        shipping_address: {
+          address_line_1: '16 Teston Rd',
+          city: 'Jesup',
+          state: 'GA',
+          country: 'US',
+          zip_code: '31546-1504',
+        },
       },
       payment_method: {
         token: oneTimeToken,
@@ -137,7 +140,7 @@ app.get('/payment-methods/:checkoutSession', async (req, res) => {
   res.json(paymentMethods)
 })
 
-// Lazy customer creation — don't block server startup
+// Lazy customer creation
 let customerPromise = null
 function getCustomerId() {
   if (!customerPromise) {
@@ -154,7 +157,6 @@ app.listen(SERVER_PORT, () => {
   console.log(`Server started at http://localhost:${SERVER_PORT}`)
   API_URL = generateBaseUrlApi()
 
-  // Start customer creation in background, don't await
   getCustomerId()
 
   if (process.env.NODE_ENV !== 'production') {
@@ -186,10 +188,10 @@ function createCustomer() {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      country: 'CO',
+      country: 'US',
       merchant_customer_id: Math.floor(Math.random() * 1000000).toString(),
-      first_name: 'John',
-      last_name: 'Doe',
+      first_name: 'Max',
+      last_name: 'Li',
       email: 'max.li@y.uno',
     }),
   }).then((resp) => resp.json())

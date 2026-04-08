@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StyleWe - Checkout (Full SDK)</title>
+  <title>StyleWe - Checkout (Lite SDK)</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="/static/styles.css">
   <link rel="preconnect" href="https://sdk-web.y.uno" crossorigin>
@@ -22,7 +22,7 @@
       <span class="arrow">&#8250;</span>
       <a href="/">Shopping Bag</a>
       <span class="arrow">&#8250;</span>
-      <span class="current">CHECKOUT — Full SDK</span>
+      <span class="current">CHECKOUT — Lite SDK</span>
     </div>
 
     <div class="sw-checkout-layout">
@@ -33,27 +33,61 @@
             <div class="sw-panel-title">
               <span class="sw-step-number">3</span>
               Payment type
-              <span class="sw-flow-badge full">Full SDK</span>
+              <span class="sw-flow-badge lite">Lite SDK</span>
             </div>
             <a href="/" style="font-size:13px;color:var(--sw-text-light);text-decoration:none;">&#8249; Back</a>
           </div>
           <div class="sw-panel-body">
             <p style="font-size:13px;color:var(--sw-text-secondary);margin-bottom:14px;">
-              Yuno Full SDK renders all available payment methods below. Select one to proceed.
+              Select a payment method. The Lite SDK renders the form for each method individually.
             </p>
 
-            <div class="sw-full-sdk-container">
-              <div class="sw-sdk-loading" id="sdk-loading">Loading payment methods...</div>
-              <div id="full-root"></div>
-              <div id="full-form-element"></div>
-              <div id="full-action-form-element"></div>
+            <!-- Payment method options -->
+            <div class="sw-payment-options">
+              <label class="sw-payment-option active" data-method="CARD">
+                <input type="radio" name="payment" value="CARD" checked>
+                <span class="sw-payment-label">Credit / Debit Card</span>
+                <div class="sw-payment-icons">
+                  <img src="https://www.stylewe.com/image/catalog/activity/s4AQRk7keQg1PL8z6basUcXfrWo3FTTPLoADK8zQ.png" alt="Visa">
+                  <img src="https://www.stylewe.com/image/catalog/activity/CFSmeEi9CnuQj0Nzawwx34UBJ0IauGezE0eMPbbE.png" alt="Mastercard">
+                  <img src="https://www.stylewe.com/image/catalog/activity/GY54JpUUeoNdwJthb4lwKhOmM0BGPArBRnMuqBBt.png" alt="Amex">
+                </div>
+              </label>
+
+              <!-- Card SDK area -->
+              <div class="sw-sdk-area open" id="card-sdk-area">
+                <div class="sw-sdk-loading" id="card-loading">Loading card form...</div>
+                <div id="lite-root"></div>
+                <div id="lite-form-element"></div>
+                <div id="lite-action-form-element"></div>
+              </div>
+
+              <label class="sw-payment-option" data-method="PAYPAL">
+                <input type="radio" name="payment" value="PAYPAL">
+                <span class="sw-payment-label">PayPal</span>
+                <div class="sw-payment-icons">
+                  <img src="https://www.stylewe.com/image/catalog/activity/EpzeDfnhOHEuSiwe5JGSMn7AOr4PACWfCOPvdpnK.png" alt="PayPal">
+                </div>
+              </label>
+
+              <!-- PayPal SDK area -->
+              <div class="sw-sdk-area" id="paypal-sdk-area">
+                <div id="paypal-lite" style="min-height:48px;"></div>
+              </div>
+
+              <label class="sw-payment-option" data-method="GOOGLE_PAY">
+                <input type="radio" name="payment" value="GOOGLE_PAY">
+                <span class="sw-payment-label">Google Pay</span>
+                <div class="sw-payment-icons">
+                  <img src="https://www.stylewe.com/image/catalog/activity/o7WntEy9UAhmILksY3i6e4TxAov2Ly06JhwNS5Rm.png" alt="Google Pay">
+                </div>
+              </label>
+
+              <!-- Google Pay SDK area -->
+              <div class="sw-sdk-area" id="google-pay-sdk-area">
+                <div id="google-pay-lite" style="min-height:48px;"></div>
+              </div>
             </div>
-
-            <!-- External payment buttons -->
-            <div id="paypal" style="min-height:0;"></div>
-            <div id="google-pay" style="min-height:0;"></div>
-
-            <button class="sw-pay-button" id="button-pay" disabled>PLACE ORDER</button>
           </div>
         </div>
       </div>
@@ -109,7 +143,7 @@
     </div>
   </div>
 
-  <script type="module" src="/static/checkout-full.js"></script>
+  <script type="module" src="/static/checkout-lite.js"></script>
   <script src="https://sdk-web.y.uno/v1.5/main.js" defer></script>
 </body>
 </html>

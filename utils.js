@@ -15,6 +15,13 @@ exports.getCountryData = function getCountryData(country) {
       currency: "BRL",
       amount: Math.floor(Math.random() * (1000 + 1) + 10),
     };
+  } else if (country == "US") {
+    countryData = {
+      documentType: "PASS",
+      documentNumber: "T12345",
+      currency: "USD",
+      amount: 31.68,
+    };
   } else {
     countryData = {
       documentType: "PASS",

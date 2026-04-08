@@ -1,7 +1,7 @@
 {
-  "name": "kimi-yuno-demo",
+  "name": "stylewe-yuno-demo",
   "version": "1.0.0",
-  "description": "Kimi AI pricing demo with Yuno Checkout Lite integration",
+  "description": "StyleWe checkout demo with Yuno Full SDK and Lite SDK integration",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

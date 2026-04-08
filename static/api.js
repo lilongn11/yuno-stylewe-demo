@@ -4,9 +4,8 @@ export async function getPublicApiKey() {
     .then(resp => resp.publicApiKey)
 }
 
-export async function getCheckoutSession(price) {
+export async function getCheckoutSession() {
   const params = new URLSearchParams(window.location.search)
-  if (price) params.set('price', price)
   return fetch(`/checkout/sessions?${params.toString()}`, {
     method: 'POST',
   }).then(resp => resp.json())

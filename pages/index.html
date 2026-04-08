@@ -3,180 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kimi AI - Pricing</title>
+  <title>StyleWe - Checkout</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-  <div class="pricing">
-    <div class="pricing-container">
-      <div class="pricing-header">
-        <h1 class="pricing-logo">Your Plan</h1>
-      </div>
+  <!-- Header -->
+  <header class="sw-header">
+    <a href="/" class="sw-logo">StyleWe</a>
+  </header>
 
-      <div class="pricing-content">
-        <div class="pricing-cycles">
-          <button class="cycle-item" data-cycle="monthly">Monthly</button>
-          <button class="cycle-item active" data-cycle="annually">
-            Annually
-            <span class="cycle-badge">Save up to $480</span>
-          </button>
+  <div class="sw-container">
+    <!-- Breadcrumbs -->
+    <div class="sw-breadcrumbs">
+      <a href="/">HOME</a>
+      <span class="arrow">&#8250;</span>
+      <a href="/">Shopping Bag</a>
+      <span class="arrow">&#8250;</span>
+      <span class="current">CHECKOUT</span>
+    </div>
+
+    <div class="sw-checkout-layout">
+      <!-- LEFT COLUMN -->
+      <div class="sw-checkout-left">
+        <!-- 1. Shipping Address -->
+        <div class="sw-panel">
+          <div class="sw-panel-header">
+            <div class="sw-panel-title">
+              <span class="sw-step-check">&#10003;</span>
+              Shipping address
+            </div>
+          </div>
+          <div class="sw-panel-body">
+            <div class="sw-address-info">
+              <div><span class="sw-address-name">Max Li</span> 2602226563</div>
+              <div><span class="sw-address-label">Contact</span> max.li@y.uno</div>
+              <div><span class="sw-address-label">Ship to</span> 16 Teston Rd, Jesup, GA / United States, 31546-1504</div>
+            </div>
+          </div>
         </div>
 
-        <div class="pricing-plans">
-          <!-- Moderato -->
-          <div class="plan">
-            <div class="plan-card">
-              <div class="plan-info">
-                <h2 class="plan-title">Moderato</h2>
-                <p class="plan-price">
-                  <span class="price-current" data-annual="15" data-monthly="19">$15</span>
-                  <span class="price-strikethrough" data-annual="19" data-monthly="">$19</span>
-                  <span class="price-period">/ month</span>
-                </p>
-                <p class="plan-billing">Billed for 12 months</p>
+        <!-- 2. Shipping Method -->
+        <div class="sw-panel">
+          <div class="sw-panel-header">
+            <div class="sw-panel-title">
+              <span class="sw-step-check">&#10003;</span>
+              Shipping Method
+            </div>
+          </div>
+          <div class="sw-panel-body">
+            <label class="sw-shipping-option">
+              <input type="radio" name="shipping" value="standard" checked>
+              <div class="sw-shipping-label">
+                <div class="sw-shipping-name">Standard <span class="sw-shipping-days">(10-15 business days)</span></div>
               </div>
-              <ul class="features">
-                <li><span class="check">&#10003;</span> Extended agent quota</li>
-                <li><span class="check">&#10003;</span> Agent multi-tasking</li>
-                <li><span class="check">&#10003;</span> Agents with 4x speed and priority access</li>
-                <li><span class="check">&#10003;</span> K2.5 with higher speed and extended quota</li>
-                <li><span class="check">&#10003;</span> Slides visual mode with Nano Banana</li>
-                <li><span class="check">&#10003;</span> Kimi Code available</li>
-              </ul>
-              <div class="plan-bottom">
-                <a href="/checkout?plan=moderato&price=15&original=19&cycle=annually" class="plan-button">Get Moderato</a>
+              <span class="sw-shipping-price">$15.84</span>
+            </label>
+            <label class="sw-shipping-option">
+              <input type="radio" name="shipping" value="express">
+              <div class="sw-shipping-label">
+                <div class="sw-shipping-name">Express Shipping <span class="sw-shipping-days">(5-10 business days)</span></div>
               </div>
+              <span class="sw-shipping-price">$29.80</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 3. Checkout Type -->
+        <div class="sw-panel">
+          <div class="sw-panel-header">
+            <div class="sw-panel-title">
+              <span class="sw-step-number">3</span>
+              Payment type
+            </div>
+          </div>
+          <div class="sw-panel-body">
+            <p style="font-size:13px;color:var(--sw-text-secondary);margin-bottom:14px;">
+              Choose a checkout integration to proceed with payment:
+            </p>
+            <div class="sw-checkout-buttons">
+              <a href="/checkout" class="sw-checkout-btn">
+                <div class="sw-checkout-btn-info">
+                  <div class="sw-checkout-btn-title">
+                    <span class="sw-flow-badge full">Full SDK</span>
+                    &nbsp; Pay with Yuno Checkout
+                  </div>
+                  <div class="sw-checkout-btn-desc">
+                    Yuno renders all payment methods — Card, PayPal, Google Pay
+                  </div>
+                </div>
+                <span class="sw-checkout-btn-arrow">&#8250;</span>
+              </a>
+              <a href="/checkout/lite" class="sw-checkout-btn">
+                <div class="sw-checkout-btn-info">
+                  <div class="sw-checkout-btn-title">
+                    <span class="sw-flow-badge lite">Lite SDK</span>
+                    &nbsp; Pay with Custom UI
+                  </div>
+                  <div class="sw-checkout-btn-desc">
+                    You control the UI — select Card, PayPal, or Google Pay individually
+                  </div>
+                </div>
+                <span class="sw-checkout-btn-arrow">&#8250;</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Order Summary -->
+      <div class="sw-checkout-right">
+        <div class="sw-summary-panel">
+          <h2 class="sw-summary-title">Order summary</h2>
+
+          <!-- Coupon -->
+          <div class="sw-coupon-row">
+            <input type="text" class="sw-coupon-input" placeholder="Enter or Select coupon code">
+            <button class="sw-coupon-btn">APPLY</button>
+          </div>
+
+          <!-- Pricing -->
+          <div class="sw-price-info">
+            <div class="sw-price-row">
+              <span>Sub total</span>
+              <span class="value">$71.36</span>
+            </div>
+            <div class="sw-price-row discount">
+              <span>Flash Deals Discount</span>
+              <span class="value">-$55.52</span>
+            </div>
+            <div class="sw-price-row">
+              <span>Standard Shipping</span>
+              <span class="value">$15.84</span>
+            </div>
+            <div class="sw-price-row total">
+              <span>Total</span>
+              <span class="value">$31.68</span>
             </div>
           </div>
 
-          <!-- Allegretto -->
-          <div class="plan plan-featured">
-            <div class="plan-card">
-              <div class="plan-badge-top">Most Popular</div>
-              <div class="plan-info">
-                <h2 class="plan-title">Allegretto</h2>
-                <p class="plan-price">
-                  <span class="price-current" data-annual="31" data-monthly="39">$31</span>
-                  <span class="price-strikethrough" data-annual="39" data-monthly="">$39</span>
-                  <span class="price-period">/ month</span>
-                </p>
-                <p class="plan-billing">Billed for 12 months</p>
-              </div>
-              <ul class="features">
-                <li><span class="check">&#10003;</span> <strong>Based on Moderato</strong></li>
-                <li><span class="check">&#10003;</span> 2x agent quota</li>
-                <li><span class="check">&#10003;</span> 2x usage quota for K2.5 model</li>
-                <li><span class="check">&#10003;</span> UNLIMITED Slides visual mode</li>
-                <li><span class="check">&#10003;</span> Kimi Code 5x quota</li>
-                <li><span class="check">&#10003;</span> Agent Swarm preview</li>
-              </ul>
-              <div class="plan-bottom">
-                <a href="/checkout?plan=allegretto&price=31&original=39&cycle=annually" class="plan-button button-featured">Get Allegretto</a>
-              </div>
-            </div>
+          <div class="sw-save-tag">Save: $55.52</div>
+
+          <div class="sw-flash-tip">
+            The stock of flash deals is limited, and the final discounts on the stock of goods actually paid shall prevail.
           </div>
 
-          <!-- Allegro -->
-          <div class="plan">
-            <div class="plan-card">
-              <div class="plan-info">
-                <h2 class="plan-title">Allegro</h2>
-                <p class="plan-price">
-                  <span class="price-current" data-annual="79" data-monthly="99">$79</span>
-                  <span class="price-strikethrough" data-annual="99" data-monthly="">$99</span>
-                  <span class="price-period">/ month</span>
-                </p>
-                <p class="plan-billing">Billed for 12 months</p>
+          <!-- Products -->
+          <div class="sw-products">
+            <div class="sw-products-header">1 Product</div>
+            <div class="sw-product-item">
+              <img src="https://www.stylewe.com/image_cache/resize/335x445/image/catalog/product/2025-07/17/a846146849d25aa7816d0f0c57da6e21.png" alt="Urban Plain Mini Denim Skirt" class="sw-product-img">
+              <div class="sw-product-info">
+                <div class="sw-product-name">Urban Plain Mini Denim Skirt</div>
+                <div class="sw-product-variant">Denim Blue / L</div>
+                <div class="sw-product-qty">Qty: <strong>1</strong></div>
+                <span class="sw-flash-tag">Flash Sale</span>
               </div>
-              <ul class="features">
-                <li><span class="check">&#10003;</span> <strong>Based on Moderato</strong></li>
-                <li><span class="check">&#10003;</span> 5x agent quota</li>
-                <li><span class="check">&#10003;</span> 2x agent multi-tasking</li>
-                <li><span class="check">&#10003;</span> Priority access during peak hours</li>
-                <li><span class="check">&#10003;</span> 5x usage quota for K2.5 model</li>
-                <li><span class="check">&#10003;</span> Kimi Code 15x quota</li>
-              </ul>
-              <div class="plan-bottom">
-                <a href="/checkout?plan=allegro&price=79&original=99&cycle=annually" class="plan-button">Get Allegro</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- Vivace -->
-          <div class="plan">
-            <div class="plan-card">
-              <div class="plan-info">
-                <h2 class="plan-title">Vivace</h2>
-                <p class="plan-price">
-                  <span class="price-current" data-annual="159" data-monthly="199">$159</span>
-                  <span class="price-strikethrough" data-annual="199" data-monthly="">$199</span>
-                  <span class="price-period">/ month</span>
-                </p>
-                <p class="plan-billing">Billed for 12 months</p>
-              </div>
-              <ul class="features">
-                <li><span class="check">&#10003;</span> <strong>Based on Allegro</strong></li>
-                <li><span class="check">&#10003;</span> 15x agent quota</li>
-                <li><span class="check">&#10003;</span> 5x agent multi-tasking</li>
-                <li><span class="check">&#10003;</span> 15x usage quota for K2.5 model</li>
-                <li><span class="check">&#10003;</span> Kimi Code 50x quota</li>
-                <li><span class="check">&#10003;</span> Agent Swarm full access</li>
-              </ul>
-              <div class="plan-bottom">
-                <a href="/checkout?plan=vivace&price=159&original=199&cycle=annually" class="plan-button">Get Vivace</a>
-              </div>
+              <div class="sw-product-price">$15.84</div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-
-  <script>
-    const cycleButtons = document.querySelectorAll('.cycle-item')
-    const prices = document.querySelectorAll('.price-current')
-    const strikethroughs = document.querySelectorAll('.price-strikethrough')
-    const billings = document.querySelectorAll('.plan-billing')
-    const planButtons = document.querySelectorAll('.plan-button')
-
-    cycleButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        cycleButtons.forEach(b => b.classList.remove('active'))
-        btn.classList.add('active')
-        const cycle = btn.dataset.cycle
-
-        prices.forEach(el => {
-          const val = cycle === 'annually' ? el.dataset.annual : el.dataset.monthly
-          el.textContent = '$' + val
-        })
-
-        strikethroughs.forEach(el => {
-          const val = cycle === 'annually' ? el.dataset.annual : el.dataset.monthly
-          if (val) {
-            el.textContent = '$' + val
-            el.style.display = ''
-          } else {
-            el.style.display = 'none'
-          }
-        })
-
-        billings.forEach(el => {
-          el.textContent = cycle === 'annually' ? 'Billed for 12 months' : 'Billed monthly'
-        })
-
-        planButtons.forEach(a => {
-          const url = new URL(a.href)
-          const card = a.closest('.plan-card')
-          const currentPrice = card.querySelector('.price-current')
-          const val = cycle === 'annually' ? currentPrice.dataset.annual : currentPrice.dataset.monthly
-          const originalVal = currentPrice.dataset.monthly
-          url.searchParams.set('price', val)
-          url.searchParams.set('original', originalVal)
-          url.searchParams.set('cycle', cycle)
-          a.href = url.toString()
-        })
-      })
-    })
-  </script>
 </body>
 </html>

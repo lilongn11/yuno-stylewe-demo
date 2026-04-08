@@ -1,62 +1,27 @@
 import { getCheckoutSession, createPayment, getPublicApiKey } from './api.js'
 
-const t0 = performance.now()
-const log = (msg) => console.log(`[${((performance.now() - t0) / 1000).toFixed(2)}s] ${msg}`)
-
-const params = new URLSearchParams(window.location.search)
-const planName = params.get('plan') || 'moderato'
-const monthlyPrice = parseFloat(params.get('price') || '15')
-const originalPrice = parseFloat(params.get('original') || params.get('price') || '15')
-const cycle = params.get('cycle') || 'annually'
-
-// Total = discounted monthly * 12 for annual, or full monthly price
-const totalAmount = cycle === 'annually' ? monthlyPrice * 12 : monthlyPrice
-const billingLabel = cycle === 'annually' ? 'Billed annually' : 'Billed monthly'
-
-// Populate order summary
-document.getElementById('plan-name').textContent =
-  planName.charAt(0).toUpperCase() + planName.slice(1) + ' Plan'
-document.getElementById('plan-price').textContent = `$${totalAmount}`
-document.getElementById('plan-billing-label').textContent = billingLabel
-document.getElementById('plan-monthly').textContent = `$${monthlyPrice} / mo`
-
-// Show discount if annual pricing is cheaper than original
-if (cycle === 'annually' && originalPrice > monthlyPrice) {
-  const savedPerMonth = originalPrice - monthlyPrice
-  const savedTotal = savedPerMonth * 12
-  document.getElementById('plan-original-price').textContent = `$${originalPrice}`
-  document.getElementById('plan-original-price').style.textDecoration = 'line-through'
-  document.getElementById('plan-original-price').style.color = '#aeaeb2'
-  document.getElementById('plan-original-price').style.marginRight = '6px'
-  document.getElementById('discount-row').style.display = 'flex'
-  document.getElementById('plan-discount').textContent = `-$${savedTotal} (save $${savedPerMonth}/mo)`
-}
+// Start API calls immediately in parallel with SDK load
+const apiDataPromise = Promise.all([
+  getCheckoutSession(),
+  getPublicApiKey(),
+])
 
 let yuno = null
 let checkoutSession = null
 let currentMethod = null
-
-// Start API calls immediately — don't wait for SDK script
-log('Starting API calls (parallel with SDK load)')
-const apiDataPromise = Promise.all([
-  getCheckoutSession(totalAmount),
-  getPublicApiKey(),
-])
+let externalButtonsMounted = false
 
 async function initCheckoutLite() {
-  log('SDK ready')
   try {
     const [sessionData, publicApiKey] = await apiDataPromise
     checkoutSession = sessionData.checkout_session
     const countryCode = sessionData.country
-    log('API data ready (session + key)')
 
     yuno = await Yuno.initialize(publicApiKey)
-    log('Yuno.initialize done')
 
     await yuno.startCheckout({
       checkoutSession,
-      elementSelector: '#root',
+      elementSelector: '#lite-root',
       countryCode,
       language: 'en',
       showLoading: false,
@@ -64,8 +29,8 @@ async function initCheckoutLite() {
       renderMode: {
         type: 'element',
         elementSelector: {
-          apmForm: '#form-element',
-          actionForm: '#action-form-element',
+          apmForm: '#lite-form-element',
+          actionForm: '#lite-action-form-element',
         },
       },
       card: {
@@ -82,70 +47,75 @@ async function initCheckoutLite() {
         console.log('Yuno error:', error)
       },
       onLoading: (args) => {
-        log(`onLoading: isLoading=${args.isLoading} type=${args.type}`)
         if (!args.isLoading) {
-          const wrapper = document.getElementById('sdk-form-wrapper')
-          wrapper.classList.remove('loading')
-          wrapper.classList.add('loaded')
-          log('Card form visible')
+          const cardArea = document.getElementById('card-sdk-area')
+          cardArea.classList.add('loaded')
         }
       },
     })
-    log('startCheckout done')
 
+    // Mount Card by default
     selectMethod('CARD')
-    log('mountCheckoutLite called')
-
-    // Mount external buttons (non-blocking)
-    yuno.mountExternalButtons([
-      { paymentMethodType: 'PAYPAL', elementSelector: '#paypal' },
-      { paymentMethodType: 'GOOGLE_PAY', elementSelector: '#google-pay' },
-    ]).catch((err) => console.log('External buttons:', err))
 
   } catch (err) {
     console.error('Init failed:', err)
+    document.getElementById('card-loading').textContent = 'Failed to load. Please refresh.'
+  }
+}
+
+async function mountExternalButtonsOnce() {
+  if (externalButtonsMounted) return
+  externalButtonsMounted = true
+
+  // Show both areas so the SDK can measure and render buttons
+  document.getElementById('paypal-sdk-area').classList.add('open')
+  document.getElementById('google-pay-sdk-area').classList.add('open')
+
+  await yuno.mountExternalButtons([
+    { paymentMethodType: 'PAYPAL', elementSelector: '#paypal-lite' },
+    { paymentMethodType: 'GOOGLE_PAY', elementSelector: '#google-pay-lite' },
+  ]).catch((err) => console.log('External buttons:', err))
+
+  // Hide the one that's not currently selected
+  if (currentMethod !== 'PAYPAL') {
+    document.getElementById('paypal-sdk-area').classList.remove('open')
+  }
+  if (currentMethod !== 'GOOGLE_PAY') {
+    document.getElementById('google-pay-sdk-area').classList.remove('open')
   }
 }
 
 function selectMethod(method) {
   currentMethod = method
 
-  // Update radio selection
-  document.querySelectorAll('.payment-method-card').forEach((c) => {
-    c.classList.toggle('selected', c.dataset.method === method)
+  // Update radio selection + active state
+  document.querySelectorAll('.sw-payment-option').forEach((opt) => {
+    const isActive = opt.dataset.method === method
+    opt.classList.toggle('active', isActive)
+    opt.querySelector('input[type="radio"]').checked = isActive
   })
 
-  const sdkForm = document.getElementById('sdk-form-wrapper')
-  const paypalWrapper = document.getElementById('paypal-wrapper')
-  const googlePayWrapper = document.getElementById('google-pay-wrapper')
-
-  // Hide all form areas
-  sdkForm.classList.remove('loaded', 'loading')
-  paypalWrapper.classList.remove('open')
-  googlePayWrapper.classList.remove('open')
-  document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('form-open'))
+  // Show/hide SDK areas
+  document.getElementById('card-sdk-area').classList.toggle('open', method === 'CARD')
+  document.getElementById('paypal-sdk-area').classList.toggle('open', method === 'PAYPAL')
+  document.getElementById('google-pay-sdk-area').classList.toggle('open', method === 'GOOGLE_PAY')
 
   if (method === 'CARD') {
-    document.querySelector('[data-method="CARD"]').classList.add('form-open')
-    sdkForm.classList.add('loading')
     yuno.mountCheckoutLite({
       paymentMethodType: 'CARD',
       vaultedToken: null,
     })
-  } else if (method === 'PAYPAL') {
-    document.querySelector('[data-method="PAYPAL"]').classList.add('form-open')
-    paypalWrapper.classList.add('open')
-  } else if (method === 'GOOGLE_PAY') {
-    document.querySelector('[data-method="GOOGLE_PAY"]').classList.add('form-open')
-    googlePayWrapper.classList.add('open')
+  } else {
+    // Lazy mount external buttons on first non-card selection
+    mountExternalButtonsOnce()
   }
 }
 
-// Click handlers
-document.querySelectorAll('.payment-method-card').forEach((card) => {
-  card.addEventListener('click', () => {
+// Click handlers for payment options
+document.querySelectorAll('.sw-payment-option').forEach((opt) => {
+  opt.addEventListener('click', () => {
     if (!yuno) return
-    selectMethod(card.dataset.method)
+    selectMethod(opt.dataset.method)
   })
 })
 
@@ -157,12 +127,11 @@ function showResult(status) {
     status === 'SUCCEEDED' ? 'Payment Successful!' : 'Payment ' + status
   document.getElementById('result-message').textContent =
     status === 'SUCCEEDED'
-      ? `Your ${planName} subscription is now active!`
-      : 'Please try again.'
+      ? 'Your StyleWe order has been placed successfully!'
+      : 'Please try again or select a different payment method.'
   overlay.classList.add('visible')
 }
 
-// Handle SDK ready — either already loaded or wait for event
 if (typeof Yuno !== 'undefined') {
   initCheckoutLite()
 } else {
