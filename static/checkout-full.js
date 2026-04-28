@@ -1,4 +1,5 @@
 import { getCheckoutSession, createPayment, getPublicApiKey } from './api.js'
+import { runRiskAssessment } from './risk-assessment.js'
 
 // Start API calls immediately in parallel with SDK load
 const apiDataPromise = Promise.all([
@@ -46,11 +47,23 @@ async function initCheckout() {
           payButton.disabled = false
         }
       },
-      async yunoCreatePayment(oneTimeToken) {
+      async yunoCreatePayment(oneTimeToken, tokenWithInformation) {
         isPaying = true
         payButton.disabled = true
-        payButton.textContent = 'PROCESSING...'
+        payButton.textContent = 'RUNNING RISK CHECK...'
 
+        try {
+          await runRiskAssessment(oneTimeToken, tokenWithInformation)
+        } catch (err) {
+          console.warn('Risk check blocked the payment:', err)
+          yuno.hideLoader()
+          payButton.disabled = false
+          payButton.textContent = 'PLACE ORDER'
+          isPaying = false
+          return
+        }
+
+        payButton.textContent = 'PROCESSING...'
         await createPayment({ oneTimeToken, checkoutSession })
         yuno.continuePayment()
       },

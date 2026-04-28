@@ -1,4 +1,5 @@
 import { getCheckoutSession, createPayment, getPublicApiKey } from './api.js'
+import { runRiskAssessment } from './risk-assessment.js'
 
 // Start API calls immediately in parallel with SDK load
 const apiDataPromise = Promise.all([
@@ -36,7 +37,13 @@ async function initCheckoutLite() {
       card: {
         type: 'extends',
       },
-      async yunoCreatePayment(oneTimeToken) {
+      async yunoCreatePayment(oneTimeToken, tokenWithInformation) {
+        try {
+          await runRiskAssessment(oneTimeToken, tokenWithInformation)
+        } catch (err) {
+          console.warn('Risk check blocked the payment:', err)
+          return
+        }
         await createPayment({ oneTimeToken, checkoutSession })
         yuno.continuePayment()
       },
